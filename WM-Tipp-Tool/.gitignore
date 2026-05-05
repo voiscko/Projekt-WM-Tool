@@ -1,0 +1,44 @@
+## .NET / C#
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.DotSettings.user
+
+## Build-Ausgaben
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+## IDE
+.idea/
+.vscode/
+*.swp
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+## Sensitive Konfiguration — Zugangsdaten NICHT in Git!
+# db.config enthält Passwort — bleibt lokal, kommt nicht auf GitHub
+db.config
+appsettings.local.json
+*.env
+secrets.json

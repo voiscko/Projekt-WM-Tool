@@ -1,0 +1,9 @@
+# WM-Tipp-Tool — Datenbank-Konfiguration
+# Diese Datei wird NICHT in Git eingecheckt (siehe .gitignore)
+# Kopiere diese Datei nach db.config und trage deine eigenen Werte ein.
+
+Host=localhost
+Port=3306
+Database=wm_tipp_db
+User=root
+Password=1234
