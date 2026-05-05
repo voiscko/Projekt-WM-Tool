@@ -3,6 +3,11 @@ using System.Drawing;
 using System.Windows.Forms;
 using WMTippTool.Database;
 
+/*
+ * Projekt: WM-Tipp-Tool 2026
+ * Entwickler: voiscko (Telegram: @voiscko)
+ */
+
 namespace WMTippTool.Forms
 {
     /// <summary>
@@ -126,7 +131,7 @@ namespace WMTippTool.Forms
             // Der kleine Text ganz unten im Fenster.
             var lblFooter = new Label
             {
-                Text = "WM-Tipp-Tool © 2026 — Schulprojekt Präsentation",
+                Text = "WM-Tipp-Tool © 2026 — by voiscko (Telegram: @voiscko)",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.FromArgb(80, 80, 100),
                 Dock = DockStyle.Fill,

@@ -1,6 +1,12 @@
 using WMTippTool.Database;
 using WMTippTool.Forms;
 
+/*
+ * Projekt: WM-Tipp-Tool 2026
+ * Entwickler: voiscko (Telegram: @voiscko)
+ * Beschreibung: Haupt-Einstiegspunkt der Anwendung
+ */
+
 namespace WMTippTool
 {
     internal static class Program

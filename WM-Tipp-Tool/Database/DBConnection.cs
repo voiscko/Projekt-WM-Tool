@@ -3,6 +3,11 @@ using System.IO;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
+/*
+ * Projekt: WM-Tipp-Tool 2026
+ * Entwickler: voiscko (Telegram: @voiscko)
+ */
+
 namespace WMTippTool.Database
 {
     /// <summary>

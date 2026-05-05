@@ -151,5 +151,6 @@ Um zu verhindern, dass das Layout auf virtuellen Maschinen (VMs) mit aktivierter
 ---
 
 <div align="center">
-  <i>Entwickelt mit ❤️ für das Schulprojekt & die Weltmeisterschaft 2026.</i>
+  <i>Entwickelt mit ❤️ für das Schulprojekt & die Weltmeisterschaft 2026.</i><br>
+  <b>Ein Projekt von voiscko (Telegram: <a href="https://t.me/voiscko">@voiscko</a>)</b>
 </div>
