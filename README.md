@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="cover.png" alt="WM-Tipp-Tool 2026 Cover" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;" />
+  <img src="WM-Tipp-Tool/Cover.png" alt="WM-Tipp-Tool 2026 Cover" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;" />
 
   # 🏆 WM-Tipp-Tool 2026
 
