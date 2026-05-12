@@ -51,11 +51,14 @@ Projekt WM Tool/               ← Das Haupt-Repository auf GitHub
     │
     ├── Formulare/             ← 🖼️ Alle Fenster (Forms) des Programms
     │   ├── MainForm.cs              ← Das Hauptmenü (erstes Fenster)
-    │   ├── SpielForm.cs             ← Spiele anlegen & löschen
-    │   ├── TippForm.cs              ← Tipps abgeben
+    │   ├── SpielForm.cs             ← Spiele anlegen & löschen (Logik)
+    │   ├── SpielFormDesign.cs       ← Visuelles Layout für das Spiel-Fenster
+    │   ├── TippForm.cs              ← Tipps abgeben (Logik)
+    │   ├── TippFormDesign.cs        ← Visuelles Layout für das Tipp-Fenster
     │   ├── RanglisteForm.cs         ← Ergebnisse eintragen & Rangliste sehen
     │   ├── DatenbankAnsichtForm.cs  ← Rohdaten in der Datenbank anzeigen
-    │   └── ProtokollForm.cs         ← Live SQL-Terminal (Hacker-Style)
+    │   ├── ProtokollForm.cs         ← Live SQL-Terminal (Hacker-Style)
+    │   └── DesignHelper.cs          ← Zentrale Hilfsklasse für Farben & Styles
     │
     └── SQL/                   ← 📄 SQL-Skripte zum manuellen Einrichten der DB
         ├── 01_create_database.sql
@@ -149,6 +152,32 @@ Jedes Formular hat immer diese zwei Methoden:
 
 1. **Konstruktor** (`public MainForm()`) – Wird aufgerufen, wenn das Fenster "erschaffen" wird. Hier werden `KomponentenInitialisieren()` und Daten laden aufgerufen.
 2. **`KomponentenInitialisieren()`** – Baut das visuelle Design auf (Buttons, Farben, Layout).
+
+### 📐 Warum gibt es extra "Design"-Dateien? (Refactoring)
+
+Damit der Code für alle im Team einfacher zu verstehen ist, haben wir die **Logik** (Was passiert, wenn man klickt?) vom **Design** (Wo ist der Button, welche Farbe hat er?) getrennt. 
+
+Das nennt man **"Refactoring"** (Code aufräumen).
+Vorher waren hunderte Zeilen Design-Code mit dem Logik-Code vermischt. Jetzt haben wir für einige Formulare `partial` Klassen erstellt. `partial` bedeutet, dass eine C#-Klasse auf mehrere Dateien aufgeteilt werden kann:
+
+- **Die Logik-Datei (z.B. `TippForm.cs`):** Enthält nur noch Datenbankabfragen, Klick-Events und das Prüfen von Eingaben.
+- **Die Design-Datei (z.B. `TippFormDesign.cs`):** Enthält nur die `KomponentenInitialisieren()` Methode mit Schriftarten, Farben und Layout (TableLayoutPanel etc.).
+- **Der `DesignHelper.cs`:** Eine zentrale Hilfsklasse. Hier definieren wir unsere Farben und standardisieren, wie Buttons, Tabellen und Dropdowns im ganzen Programm aussehen sollen. Das spart unglaublich viel Code!
+
+**Der Erfolg dieses Refactorings (Wer hat was gemacht):**
+Durch diese Auslagerung wurden die Hauptdateien extrem verkleinert und sind nun perfekt übersichtlich für das Lernen und die Präsentation!
+
+| Datei | Vorher | Nachher | Wer ist zuständig? |
+| :--- | :--- | :--- | :--- |
+| `TippForm.cs` (Logik) | 515 Zeilen | **160 Zeilen** | Aylin |
+| `SpielForm.cs` (Logik) | 450 Zeilen | **131 Zeilen** | Lian |
+| `TippFormDesign.cs` | - | ~180 Zeilen (neu) | Mark |
+| `SpielFormDesign.cs` | - | ~160 Zeilen (neu) | Mark |
+| `DesignHelper.cs` | - | Zentrale Design-Logik | Mark |
+
+Jetzt können Aylin und Lian sich zu 100% auf die C#-Logik und MySQL konzentrieren, während Mark die Design-Dateien und den `DesignHelper` verwaltet.
+
+---
 
 ### Wie öffnet man ein Fenster?
 
@@ -385,9 +414,9 @@ Beim ersten Start erstellt das Programm die Datenbank und alle Tabellen **automa
 
 ## 👥 Team & Aufgabenverteilung
 
-- **Aylin**: Developer — [Tipp-Funktionalität](WM-Tipp-Tool/Formulare/TippForm.cs)
-- **Lian**: Developer — UI & [Spielverwaltung](WM-Tipp-Tool/Formulare/SpielForm.cs)
-- **Mark**: Alles andere + Zusammensetzen von allem (z.B. [Program.cs](WM-Tipp-Tool/Program.cs), [Datenbank/](WM-Tipp-Tool/Datenbank/))
+- **Aylin**: Developer — [TippForm.cs Logik](WM-Tipp-Tool/Formulare/TippForm.cs) (Erfolgreich verschlankt von 515 auf 160 Zeilen!)
+- **Lian**: Developer — [SpielForm.cs Logik](WM-Tipp-Tool/Formulare/SpielForm.cs) (Erfolgreich verschlankt von 450 auf 131 Zeilen!)
+- **Mark**: UI-Design Refactoring (`TippFormDesign.cs` ~180 Zeilen, `SpielFormDesign.cs` ~160 Zeilen, `DesignHelper.cs`) + Alles andere & Zusammensetzen (z.B. [Program.cs](WM-Tipp-Tool/Program.cs), [Datenbank/](WM-Tipp-Tool/Datenbank/))
 
 ---
 
