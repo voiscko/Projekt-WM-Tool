@@ -1,5 +1,4 @@
 <div align="center">
-  <!-- HINWEIS: Speichere das hochgeladene Bild als "cover.png" im gleichen Ordner wie diese Datei, damit es hier angezeigt wird! -->
   <img src="cover.png" alt="WM-Tipp-Tool 2026 Cover" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;" />
 
   # 🏆 WM-Tipp-Tool 2026
@@ -11,142 +10,376 @@
   [![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
   [![Windows Forms](https://img.shields.io/badge/Windows_Forms-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/desktop/winforms/)
 
-  *Eine leistungsstarke, DPI-bewusste Windows Forms Anwendung mit MySQL-Datenbankanbindung. Entwickelt für reibungslose Tippspiele, beeindruckende Schulpräsentationen und echtes Fußballfieber.*
+  *Eine leistungsstarke Windows Forms Anwendung mit MySQL-Datenbankanbindung. Entwickelt für reibungslose Tippspiele und Schulpräsentationen.*
 </div>
 
 ---
 
 ## ✨ Features
 
-- **🎮 Intuitive Verwaltung:** Spiele in Sekundenschnelle anlegen, reale Ergebnisse eintragen und immer den Überblick behalten.
-- **🎯 Smartes Tippsystem:** Jeder Mitspieler gibt seinen persönlichen Tipp ab (inkl. integriertem Duplikatschutz, um mehrfache Tipps zu verhindern).
-- **🏆 Automatisierte Rangliste:** Punkteberechnung in Echtzeit. Die Tabelle aktualisiert sich magisch von selbst!
-- **🖥️ DPI-Awareness:** Gestochen scharfes, responsives UI – das Layout passt sich automatisch an, selbst auf hochskalierten Windows-VMs (`PerMonitorV2`).
-- **👨‍🏫 Präsentations-Modus:** Integriertes **Live SQL-Terminal** und eine **Rohdatenbank-Ansicht** – perfekt, um Lehrern die Funktionalität unter der Haube zu demonstrieren!
-- **🌙 Modernes Design:** Elegantes Dark-Mode-Layout, das auf jedem Monitor gut aussieht.
+- **🎮 Spiele verwalten:** Spiele anlegen, Ergebnisse eintragen, alles im Blick behalten.
+- **🎯 Tipps abgeben:** Jeder Nutzer gibt seinen eigenen Tipp ab – mit Duplikatschutz.
+- **🏆 Automatische Rangliste:** Punkte werden sofort berechnet, die Tabelle aktualisiert sich von selbst.
+- **🖥️ DPI-Aware:** Scharfes UI, auch auf 4K-Monitoren und Windows-VMs mit Skalierung.
+- **👨‍🏫 Präsentations-Modus:** Live SQL-Terminal + Rohdatenbank-Ansicht für Lehrer.
+- **🌙 Dark Mode:** Elegantes dunkles Design auf allen Fenstern.
 
 ---
 
-## 🛠️ Tech-Stack & Bibliotheken
+## 🗺️ Ordnerstruktur — Was liegt wo?
 
-Hier ein Blick auf die Technologien, die dieses Projekt antreiben:
+Hier siehst du, wie das Projekt aufgebaut ist und was sich in welchem Ordner befindet:
 
-| Komponente | Technologie / Bibliothek | Beschreibung |
-| :--- | :--- | :--- |
-| **Sprache** | C# (.NET 8) | Moderne, leistungsstarke und typsichere Programmierung. |
-| **UI-Framework** | Windows Forms | `net8.0-windows` für klassische Desktop-Entwicklung. |
-| **Datenbank** | MySQL | Zuverlässiges relationelles Datenbanksystem. |
-| **Treiber** | `MySql.Data (9.1.0)` | Offizieller NuGet-Treiber für die reibungslose C#-zu-MySQL-Verbindung. |
-| **DPI-Support** | `PerMonitorV2` | Code & `app.manifest` für perfekte Skalierung ohne Verzerrungen. |
+```
+Projekt WM Tool/               ← Das Haupt-Repository auf GitHub
+│
+├── README.md                  ← Diese Datei (Projektbeschreibung & Erklärung)
+├── LICENSE                    ← Lizenz des Projekts
+│
+└── WM-Tipp-Tool/              ← Der eigentliche C#-Quellcode
+    │
+    ├── Program.cs             ← 🚀 DER STARTPUNKT – hier beginnt das Programm
+    ├── WM-Tipp-Tool.csproj    ← Projektdatei (Einstellungen für den Build)
+    ├── WM-Tipp-Tool.sln       ← Lösungsdatei für Visual Studio (nicht anfassen!)
+    ├── app.manifest           ← DPI-Einstellungen für Windows
+    ├── db.config              ← 🔑 Deine MySQL-Zugangsdaten (NICHT in Git!)
+    ├── db.config.example      ← Vorlage für die db.config
+    │
+    ├── Datenbank/             ← 📦 Alles rund um MySQL-Verbindung & Logging
+    │   ├── DatenbankVerbindung.cs   ← Stellt die Verbindung zu MySQL her
+    │   └── SQLProtokollierer.cs     ← Speichert alle SQL-Befehle für das Terminal
+    │
+    ├── Formulare/             ← 🖼️ Alle Fenster (Forms) des Programms
+    │   ├── MainForm.cs              ← Das Hauptmenü (erstes Fenster)
+    │   ├── SpielForm.cs             ← Spiele anlegen & löschen
+    │   ├── TippForm.cs              ← Tipps abgeben
+    │   ├── RanglisteForm.cs         ← Ergebnisse eintragen & Rangliste sehen
+    │   ├── DatenbankAnsichtForm.cs  ← Rohdaten in der Datenbank anzeigen
+    │   └── ProtokollForm.cs         ← Live SQL-Terminal (Hacker-Style)
+    │
+    └── SQL/                   ← 📄 SQL-Skripte zum manuellen Einrichten der DB
+        ├── 01_create_database.sql
+        ├── 02_create_spiele.sql
+        └── 03_create_tipps.sql
+```
 
 ---
 
-## 🚀 Installation & Start
+## 🔌 Wie startet das Programm? — `Program.cs`
 
-Mit dieser Anleitung bringst du das Projekt in wenigen Minuten zum Laufen.
+Die Datei `Program.cs` ist der **allererste Code**, der ausgeführt wird. Sie ist der Startknopf unseres Programms:
 
-### Voraussetzungen
-1. **[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)** installiert.
-2. **[MySQL Community Server](https://dev.mysql.com/downloads/mysql/)** läuft lokal auf deinem Rechner (Port 3306).
-3. *(Empfohlen)* **[VS Code](https://code.visualstudio.com/)** mit der *C# Dev Kit* Extension.
+```csharp
+// 1. DPI-Modus setzen (damit alles scharf ist)
+Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+Application.EnableVisualStyles();
 
-### 1. Repository vorbereiten
-Öffne ein Terminal (z.B. PowerShell) direkt im Projektordner (`WM-Tipp-Tool`):
-```powershell
-# Lädt alle benötigten Bibliotheken (wie MySql.Data) aus dem Netz
-dotnet restore
+// 2. Datenbank einrichten (Tabellen erstellen, falls nötig)
+DatenbankVerbindung.DatenbankInitialisieren();
+
+// 3. Das Hauptfenster öffnen
+Application.Run(new MainForm());
 ```
 
-### 2. Datenbank konfigurieren (`db.config`)
-Sicherheit geht vor! Die Datenbank-Zugangsdaten werden nicht im Code gespeichert, sondern in einer lokalen Datei.
+**Der Ablauf beim Start:**
+1. Windows-Einstellungen setzen (Schärfe auf jedem Monitor)
+2. Die Klasse `DatenbankVerbindung` aufrufen → sie liest die `db.config`, verbindet sich mit MySQL und erstellt die Tabellen, falls sie noch nicht existieren
+3. Das Hauptmenü (`MainForm`) öffnen
 
-Erstelle die Konfigurationsdatei aus der mitgelieferten Vorlage:
-```powershell
-copy db.config.example db.config
-```
+---
 
-Öffne die neue `db.config` Datei in einem Texteditor und trage dein MySQL-Passwort ein:
+## 🔑 Die Datenbankverbindung — `Datenbank/DatenbankVerbindung.cs`
+
+Dies ist unsere wichtigste Hilfsklasse. Sie ist `static` — das bedeutet, sie existiert **nur einmal** im gesamten Programm und ist von überall erreichbar.
+
+### Wie liest sie die `db.config`?
+
+Die `db.config`-Datei ist eine einfache Textdatei:
 ```ini
 Host=localhost
 Port=3306
 Database=wm_tipp_db
 User=root
-Password=DEIN_PASSWORT_HIER
+Password=
 ```
-*(Pro-Tipp: Wenn du das Verknüpfen der Datei mal vergisst, fängt das Programm dies beim Start ab und erstellt automatisch eine Platzhalter-Datei für dich!)*
 
-### 3. Anwendung starten
-Jetzt kann es losgehen:
-```powershell
-dotnet run
+Die Klasse liest diese Datei Zeile für Zeile und sucht nach dem `=`-Zeichen. Alles links davon ist der **Schlüssel** (`Host`), alles rechts ist der **Wert** (`localhost`).
+
+### Wie wird die Verbindung aufgebaut?
+
+MySQL braucht einen sogenannten **ConnectionString** – das ist eine einzelne Textzeile mit allen Anmeldedaten zusammengefasst:
+
 ```
-**Die Magie passiert im Hintergrund:** Beim allerersten Start verbindet sich das Tool mit MySQL, erstellt automatisch die Datenbank `wm_tipp_db` und legt alle benötigten Tabellen (`spiele`, `tipps`) selbstständig an! 🎉
+Server=localhost;Port=3306;Database=wm_tipp_db;Uid=root;Pwd=;CharSet=utf8mb4;
+```
+
+Die Methode `VerbindungAbrufen()` baut diesen String zusammen und gibt ein `MySqlConnection`-Objekt zurück. Dieses Objekt ist quasi das "Telefonkabel" zur Datenbank.
+
+### Die wichtigsten Methoden im Überblick
+
+| Methode | Was sie tut |
+| :--- | :--- |
+| `DatenbankInitialisieren()` | Wird beim Programmstart einmalig aufgerufen. Erstellt die Datenbank und Tabellen, falls sie noch nicht existieren. |
+| `VerbindungAbrufen()` | Gibt ein neues, geöffnetes Verbindungs-Objekt zurück. Wird in jedem Formular genutzt. |
+| `VerbindungTesten()` | Probiert kurz, ob MySQL überhaupt erreichbar ist. Gibt `true` oder `false` zurück. |
+| `KonfigurationLaden()` | Liest die `db.config`-Datei. Wird automatisch beim ersten Aufruf erledigt. |
 
 ---
 
-## 🕹️ So funktioniert das Tippspiel (Workflow)
+## 📋 Der SQL-Protokollierer — `Datenbank/SQLProtokollierer.cs`
 
-Das Spielprinzip ist einfach, logisch und macht riesig Spaß:
+Diese Klasse ist unser **digitales Notizbuch**. Jedes Mal, wenn irgendwo im Programm ein SQL-Befehl an MySQL geschickt wird, rufen wir hier `Protokollieren(...)` auf.
 
-1. 📅 **Spiele anlegen:** Der Admin trägt die anstehenden WM-Spiele ein (Team 1 vs. Team 2 + Datum & Uhrzeit).
-2. ✍️ **Tipps abgeben:** Jeder Mitspieler gibt über das Dropdown-Menü seinen persönlichen Tipp für ein Spiel ab.
-3. 📺 **Mitfiebern:** Das echte Spiel läuft im TV!
-4. 🏁 **Ergebnis eintragen:** Nach dem Abpfiff trägst du das reale Ergebnis ein. Die Punkte der Spieler werden sofort berechnet.
-5. 🥇 **Rangliste checken:** Wer ist der Tippkönig? Die Rangliste zeigt die Platzierungen und Gesamtpunkte live an.
+```csharp
+// Beispiel aus SpielForm.cs:
+SQLProtokollierer.Protokollieren("INSERT INTO spiele ...");
+```
 
-### 💯 Punktelogik
+Die Klasse speichert alle Einträge in einer Liste. Wenn das `ProtokollForm` (das Terminal-Fenster) geöffnet wird, zeigt es alle gesammelten Einträge an.
 
-Das Tool nutzt ein faires und transparentes Punktesystem:
+**Das besondere Feature:** Ein **Event** (`BeiNeuemProtokollEintrag`). Das ist wie ein Alarm. Das `ProtokollForm` meldet sich bei diesem Alarm an. Sobald ein neuer Befehl protokolliert wird, klingelt der Alarm und der neue Eintrag erscheint **sofort in Echtzeit** im Terminal-Fenster, ohne dass man auf Aktualisieren drücken muss.
+
+---
+
+## 🖼️ Die Formulare (Fenster) — `Formulare/`
+
+Jede `.cs`-Datei im `Formulare/`-Ordner ist **ein Fenster** des Programms. Sie alle erben von der Klasse `Form` (von Windows bereitgestellt), die die Grundfunktionalität eines Fensters mitbringt.
+
+Jedes Formular hat immer diese zwei Methoden:
+
+1. **Konstruktor** (`public MainForm()`) – Wird aufgerufen, wenn das Fenster "erschaffen" wird. Hier werden `KomponentenInitialisieren()` und Daten laden aufgerufen.
+2. **`KomponentenInitialisieren()`** – Baut das visuelle Design auf (Buttons, Farben, Layout).
+
+### Wie öffnet man ein Fenster?
+
+```csharp
+// Öffnet TippForm als Dialog (Hauptfenster wird blockiert, bis TippForm geschlossen wird)
+TippForm fenster = new TippForm();
+fenster.ShowDialog();
+```
+
+---
+
+### 1. `MainForm.cs` — Das Hauptmenü
+
+Das ist das **allererste Fenster**, das der Nutzer sieht. Es hat 5 Buttons, die jeweils ein anderes Fenster öffnen. Außerdem zeigt es unten an, ob MySQL gerade verbunden ist (grüner oder roter Punkt).
+
+**Ablauf:**
+1. `KomponentenInitialisieren()` baut alle 5 Buttons und das Layout auf
+2. `DatenbankStatusPruefen()` ruft `DatenbankVerbindung.VerbindungTesten()` auf und zeigt das Ergebnis an
+
+---
+
+### 2. `SpielForm.cs` — Spiele verwalten
+
+Hier kann der Admin (Lehrer/Organisator) neue Spiele anlegen und bestehende löschen.
+
+**So funktioniert das Hinzufügen:**
+```
+Nutzer gibt Team1, Team2, Datum ein
+  → Klick auf "Spiel hinzufügen"
+  → BtnHinzufuegen_Klick() wird aufgerufen
+  → Eingaben werden geprüft (leer? gleicher Name?)
+  → SQL: INSERT INTO spiele (team1, team2, datum) VALUES (...)
+  → Tabelle wird neu geladen: LadeSpiele()
+```
+
+**So funktioniert das Löschen:**
+```
+Nutzer klickt eine Zeile in der Tabelle an
+  → Klick auf "Ausgewähltes Spiel löschen"
+  → ID des ausgewählten Spiels aus der Tabelle auslesen
+  → Bestätigungsdialog (JA/NEIN?)
+  → SQL: DELETE FROM spiele WHERE id = ...
+  → Tabelle wird neu geladen
+```
+
+> **Wichtig:** Wenn ein Spiel gelöscht wird, werden durch `ON DELETE CASCADE` in der Datenbank **automatisch auch alle Tipps** zu diesem Spiel gelöscht!
+
+---
+
+### 3. `TippForm.cs` — Tipps abgeben
+
+Hier geben die Mitspieler ihre Tipps ein. Das Dropdown-Menü zeigt nur Spiele an, die noch **kein Ergebnis** haben (also noch nicht gespielt wurden).
+
+**Hintergrundliste mit IDs:**
+Das Dropdown zeigt dem Nutzer lesbaren Text (`"Deutschland vs. Spanien (14.06.2026 18:00)"`). Im Hintergrund gibt es eine geheime `List<int> spielIDs`, die die echten Datenbank-IDs in der gleichen Reihenfolge speichert. Wenn der Nutzer den 3. Eintrag auswählt, nehmen wir `spielIDs[2]` als die echte ID für den Datenbankbefehl.
+
+**Duplikatschutz:**
+Bevor ein Tipp gespeichert wird, fragt das Programm die Datenbank:
+```sql
+SELECT COUNT(*) FROM tipps WHERE spiel_id = 5 AND benutzername = 'Max'
+```
+Wenn die Zahl größer als 0 ist, hat der Nutzer schon getippt → Fehlermeldung.
+
+---
+
+### 4. `RanglisteForm.cs` — Ergebnisse & Rangliste
+
+Dies ist das **komplexeste Fenster**. Es hat zwei Aufgaben:
+1. Echte Ergebnisse eintragen und Punkte berechnen
+2. Die Gesamtrangliste anzeigen
+
+**Wie werden Punkte berechnet?**
+
+```csharp
+private static int BerechnePunkte(int tipp1, int tipp2, int ergebnis1, int ergebnis2)
+{
+    // Exakt richtig? → 3 Punkte
+    if (tipp1 == ergebnis1 && tipp2 == ergebnis2) return 3;
+
+    // Richtige Tendenz? (Wer gewonnen hat, stimmt)
+    // Math.Sign gibt +1 (Sieg), -1 (Niederlage) oder 0 (Unentschieden) zurück
+    if (Math.Sign(tipp1 - tipp2) == Math.Sign(ergebnis1 - ergebnis2)) return 1;
+
+    return 0; // Komplett falsch
+}
+```
+
+**Der Ablauf beim Eintragen eines Ergebnisses:**
+```
+Admin wählt Spiel im Dropdown, gibt Ergebnis ein
+  → Klick auf "Ergebnis speichern & Punkte berechnen"
+  → UPDATE spiele SET ergebnis_team1 = ..., ergebnis_team2 = ... WHERE id = ...
+  → Alle Tipps für dieses Spiel laden (SELECT ... FROM tipps WHERE spiel_id = ...)
+  → Für JEDEN Tipp: BerechnePunkte() aufrufen
+  → UPDATE tipps SET punkte = ... WHERE id = ...
+  → Rangliste und Tipps-Tabelle neu laden
+```
+
+**Die Rangliste-Abfrage (komplexes SQL):**
+```sql
+SELECT
+  ROW_NUMBER() OVER (ORDER BY SUM(punkte) DESC) AS 'Platz',
+  benutzername AS 'Name',
+  SUM(punkte) AS 'Gesamtpunkte',
+  COUNT(*) AS 'Tipps gesamt'
+FROM tipps
+GROUP BY benutzername
+ORDER BY Gesamtpunkte DESC
+```
+- `GROUP BY benutzername` → fasst alle Tipps eines Nutzers zusammen
+- `SUM(punkte)` → addiert alle seine Punkte
+- `ROW_NUMBER()` → vergibt automatisch die Platzierung (1, 2, 3, ...)
+
+---
+
+### 5. `DatenbankAnsichtForm.cs` — Rohdaten ansehen
+
+Ein einfaches Fenster für Präsentationen. Es zeigt den genauen Inhalt der Datenbank-Tabellen so an, wie sie in MySQL gespeichert sind. Der SQL-Befehl dahinter ist simpel:
+
+```sql
+SELECT * FROM spiele   -- oder tipps
+```
+
+---
+
+### 6. `ProtokollForm.cs` — SQL-Terminal
+
+Ein Terminal-Fenster im Hacker-Style (schwarzer Hintergrund, grüne Schrift). Es zeigt in Echtzeit jeden SQL-Befehl an, der im Programm ausgeführt wird.
+
+**Wie funktioniert die Echtzeit-Aktualisierung?**
+
+Das `ProtokollForm` meldet sich beim **Event** des `SQLProtokollierers` an:
+```csharp
+// Im Konstruktor:
+SQLProtokollierer.BeiNeuemProtokollEintrag += SQLProtokollierer_BeiNeuemProtokollEintrag;
+```
+
+Wenn jetzt irgendwo im Programm `SQLProtokollierer.Protokollieren(...)` aufgerufen wird, feuert das Event und die Methode `SQLProtokollierer_BeiNeuemProtokollEintrag` wird automatisch aufgerufen → neuer Text erscheint sofort im Terminal.
+
+Wenn das Fenster **geschlossen** wird, muss es sich wieder abmelden (sonst Absturz):
+```csharp
+// OnFormClosing:
+SQLProtokollierer.BeiNeuemProtokollEintrag -= SQLProtokollierer_BeiNeuemProtokollEintrag;
+```
+
+---
+
+## 🗄️ Die Datenbank — Tabellenstruktur
+
+Das Programm nutzt zwei Tabellen in MySQL, die beim ersten Start **automatisch erstellt** werden:
+
+### Tabelle `spiele`
+Speichert alle WM-Spiele.
+
+| Spalte | Typ | Beschreibung |
+| :--- | :--- | :--- |
+| `id` | INT, PK, Auto | Automatische, einmalige ID |
+| `team1` | VARCHAR(100) | Name von Team 1 |
+| `team2` | VARCHAR(100) | Name von Team 2 |
+| `datum` | DATETIME | Datum und Uhrzeit des Spiels |
+| `ergebnis_team1` | INT, NULL | Echtes Ergebnis (leer = Spiel noch offen) |
+| `ergebnis_team2` | INT, NULL | Echtes Ergebnis (leer = Spiel noch offen) |
+
+### Tabelle `tipps`
+Speichert alle Tipps der Nutzer.
+
+| Spalte | Typ | Beschreibung |
+| :--- | :--- | :--- |
+| `id` | INT, PK, Auto | Automatische, einmalige ID |
+| `spiel_id` | INT, FK | Verknüpfung zur `spiele`-Tabelle |
+| `benutzername` | VARCHAR(100) | Name des Tippers |
+| `tipp_team1` | INT | Getippte Tore für Team 1 |
+| `tipp_team2` | INT | Getippte Tore für Team 2 |
+| `punkte` | INT | Errechnete Punkte (Standard: 0) |
+
+> **Fremdschlüssel (FK):** Die Spalte `spiel_id` in `tipps` verweist auf die `id` in `spiele`. Mit `ON DELETE CASCADE` werden beim Löschen eines Spiels automatisch alle dazugehörigen Tipps mitgelöscht.
+
+---
+
+## 💯 Punktesystem
 
 | Situation | Beispiel | Punkte |
 | :--- | :--- | :--- |
-| **Exaktes Ergebnis** | Getippt: 2:1, Echtes Ergebnis: 2:1 | **3 Punkte** |
-| **Richtige Tendenz** | Getippt: 2:1, Echtes Ergebnis: 3:0 | **1 Punkt** |
-| **Falsch getippt** | Getippt: 2:1, Echtes Ergebnis: 0:1 | **0 Punkte** |
+| **Exaktes Ergebnis** | Getippt: 2:1, Echt: 2:1 | **3 Punkte** |
+| **Richtige Tendenz** | Getippt: 3:0, Echt: 1:0 | **1 Punkt** |
+| **Falsch getippt** | Getippt: 2:1, Echt: 0:1 | **0 Punkte** |
 
 ---
 
-## 👨‍💻 Für Entwickler & Lehrer (Präsentation)
+## 🚀 Installation & Start
 
-Dieses Projekt wurde mit Blick auf Transparenz und Lehre entwickelt. Der gesamte Code ist **einsteigerfreundlich und vollständig auf Deutsch kommentiert**, um Team-Kollegen die Einarbeitung zu erleichtern.
+### Voraussetzungen
+1. **[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)** installiert
+2. **MySQL / XAMPP** läuft lokal auf Port 3306
+3. Visual Studio (empfohlen) oder VS Code mit C# Dev Kit
 
-### Integrierte Präsentations-Tools
-- 💻 **Live SQL-Terminal (`ProtokollForm`):** Ein spezielles Fenster, das in Echtzeit alle `INSERT`, `UPDATE` und `SELECT` Befehle anzeigt. Perfekt, um im Unterricht zu erklären, was genau passiert, wenn man auf "Speichern" drückt!
-- 🗄️ **Rohdaten-Ansicht (`DatenbankAnsichtForm`):** Ein ungeschönter, direkter Blick auf die MySQL-Tabellen, um zu beweisen, dass die Datenstruktur ordnungsgemäß gefüllt wird.
+### Schritt 1 — Repository klonen & Pakete laden
+```powershell
+dotnet restore
+```
 
-### Datenbankschema im Detail
+### Schritt 2 — Datenbank konfigurieren
+```powershell
+copy db.config.example db.config
+```
+Die `db.config` öffnen und das MySQL-Passwort eintragen:
+```ini
+Host=localhost
+Port=3306
+Database=wm_tipp_db
+User=root
+Password=DEIN_PASSWORT
+```
 
-<details>
-<summary><b>Klicke hier, um das relationale Tabellen-Design zu sehen</b></summary>
-
-**Tabelle `spiele`**
-- `id` (INT, PK, Auto_Increment)
-- `team1`, `team2` (VARCHAR)
-- `datum` (DATETIME)
-- `ergebnis_team1`, `ergebnis_team2` (INT, NULLable für noch offene Spiele)
-
-**Tabelle `tipps`**
-- `id` (INT, PK, Auto_Increment)
-- `spiel_id` (INT, FK) – *Verknüpft den Tipp mit einem Spiel*
-- `benutzername` (VARCHAR)
-- `tipp_team1`, `tipp_team2` (INT)
-- `punkte` (INT, Default 0) – *Wird automatisch vom Programm berechnet und aktualisiert*
-
-</details>
-
-### Architektur & Layout-Stabilität
-Um zu verhindern, dass das Layout auf virtuellen Maschinen (VMs) mit aktivierter Windows-Skalierung (z.B. 125% / 150%) zusammenbricht, nutzt die App **PerMonitorV2**. Das gesamte UI ist flexibel mit `TableLayoutPanel` und `Dock=Fill` aufgebaut. Es gibt keine starren `x/y`-Koordinaten, wodurch das Programm immer proportional perfekt skaliert!
+### Schritt 3 — Programm starten
+```powershell
+dotnet run
+```
+Beim ersten Start erstellt das Programm die Datenbank und alle Tabellen **automatisch**!
 
 ---
 
-## 🗺️ Roadmap & offene Punkte (Entwicklungsstand: Mai 2026)
+## 🛠️ Tech-Stack
 
-**Nächste geplante Features:**
-- [ ] Ergebnisse nachträglich korrigierbar machen (Edit-Funktion).
-- [ ] Datum-Validierung (vergangene Daten beim Anlegen von Spielen blockieren).
-- [ ] Visuelles Feedback in Dropdowns, wenn Spiele bereits ausgewertet wurden.
-- [ ] CSV/Excel-Export der Rangliste hinzufügen.
-- [ ] Echtes Benutzer-Login-System implementieren.
+| Komponente | Technologie | Beschreibung |
+| :--- | :--- | :--- |
+| **Sprache** | C# (.NET 8) | Moderne, typsichere Programmierung |
+| **UI-Framework** | Windows Forms | Desktop-Fenster auf Windows |
+| **Datenbank** | MySQL | Relationales Datenbanksystem |
+| **Treiber** | `MySql.Data 9.1.0` | Offizielles NuGet-Paket für C# ↔ MySQL |
+| **DPI-Support** | PerMonitorV2 | Scharfes UI auf allen Monitoren |
 
 ---
 
