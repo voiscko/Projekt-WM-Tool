@@ -1,3 +1,5 @@
+using System;
+using System.Windows.Forms;
 using WMTippTool.Database;
 using WMTippTool.Forms;
 
@@ -21,12 +23,12 @@ namespace WMTippTool
 
             try
             {
-                DBConnection.InitDatabase();
+                DatenbankVerbindung.DatenbankInitialisieren();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Fehler beim Initialisieren der Datenbank:\n\n{ex.Message}\n\n" +
+                    "Fehler beim Initialisieren der Datenbank:\n\n" + ex.Message + "\n\n" +
                     "Bitte stellen Sie sicher, dass MySQL läuft und die Zugangsdaten korrekt sind.",
                     "Datenbankfehler",
                     MessageBoxButtons.OK,

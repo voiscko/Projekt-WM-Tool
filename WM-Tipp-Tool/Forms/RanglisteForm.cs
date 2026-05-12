@@ -27,11 +27,11 @@ namespace WMTippTool.Forms
         private Label lblSpielInfo = null!; // Kleines Info-Textfeld
         
         // Liste für die geheimen Spiel-IDs im Hintergrund
-        private List<int> spielIds = new();
+        private List<int> spielIDs = new();
 
         public RanglisteForm()
         {
-            InitializeComponent();
+            KomponentenInitialisieren();
             LadeSpieleFuerErgebnis(); // Holt alle Spiele für das Dropdown-Menü
             LadeRangliste(); // Berechnet und lädt die aktuelle Rangliste
         }
@@ -39,7 +39,7 @@ namespace WMTippTool.Forms
         /// <summary>
         /// Baut das Fenster und ordnet alles an.
         /// </summary>
-        private void InitializeComponent()
+        private void KomponentenInitialisieren()
         {
             // Fenstereigenschaften
             this.Text = "🏆 Rangliste & Ergebnisse";
@@ -50,7 +50,7 @@ namespace WMTippTool.Forms
             this.AutoScaleMode = AutoScaleMode.Dpi;
 
             // ===== Haupt-Layout =====
-            var rootLayout = new TableLayoutPanel
+            var hauptLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
@@ -59,11 +59,11 @@ namespace WMTippTool.Forms
                 Padding = new Padding(14, 10, 14, 10)
             };
             // 4 Zeilen: Titel | Ergebnis-Eingabe oben | Tabellen in der Mitte | Buttons unten
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 52f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 170f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 55f));
-            rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 52f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 170f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 55f));
+            hauptLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
             // ----- 1. Titel -----
             var lblTitel = new Label
@@ -117,7 +117,7 @@ namespace WMTippTool.Forms
             spielZeileLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200f));
             spielZeileLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
 
-            var lblSpiel = StyleLabel("Spiel:");
+            var lblSpiel = LabelStylen("Spiel:");
             cboSpiele = new ComboBox
             {
                 Dock = DockStyle.Fill,
@@ -129,7 +129,7 @@ namespace WMTippTool.Forms
                 Margin = new Padding(0, 4, 8, 4)
             };
             // Wenn der Nutzer ein Spiel im Dropdown ändert, zeige die Tipps für DIESES Spiel rechts an.
-            cboSpiele.SelectedIndexChanged += CboSpiele_SelectedIndexChanged;
+            cboSpiele.SelectedIndexChanged += CboSpiele_AuswahlGeaendert;
 
             lblSpielInfo = new Label
             {
@@ -155,10 +155,10 @@ namespace WMTippTool.Forms
 
             var lblErgebnis = new Label { Text = "Ergebnis:", Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.FromArgb(180, 180, 210), AutoSize = true, Margin = new Padding(0, 8, 10, 0) };
             var lblT1 = new Label { Text = "Team 1:", Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.FromArgb(180, 180, 210), AutoSize = true, Margin = new Padding(0, 8, 6, 0) };
-            nudErgebnisTeam1 = CreateNumericUpDown();
+            nudErgebnisTeam1 = ZahlenFeldErstellen();
             var lblDp = new Label { Text = ":", Font = new Font("Segoe UI", 16, FontStyle.Bold), ForeColor = Color.White, AutoSize = true, Margin = new Padding(6, 4, 6, 0) };
             var lblT2 = new Label { Text = "Team 2:", Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.FromArgb(180, 180, 210), AutoSize = true, Margin = new Padding(0, 8, 6, 0) };
-            nudErgebnisTeam2 = CreateNumericUpDown();
+            nudErgebnisTeam2 = ZahlenFeldErstellen();
 
             btnErgebnisEintragen = new Button
             {
@@ -174,7 +174,7 @@ namespace WMTippTool.Forms
             };
             btnErgebnisEintragen.FlatAppearance.BorderSize = 0;
             // Ruft die Methode auf, wenn der Button geklickt wird
-            btnErgebnisEintragen.Click += BtnErgebnisEintragen_Click;
+            btnErgebnisEintragen.Click += BtnErgebnisEintragen_Klick;
 
             ergebnisEingabeFlow.Controls.AddRange(new Control[]
             {
@@ -189,7 +189,7 @@ namespace WMTippTool.Forms
 
             // ===== 3. Split-Bereich (Links: Rangliste | Rechts: Tipps zum Spiel) =====
             // Wir machen ein Layout, das in zwei Spalten (Links 45%, Rechts 55%) geteilt ist.
-            var splitLayout = new TableLayoutPanel
+            var geteiltesLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
@@ -197,10 +197,10 @@ namespace WMTippTool.Forms
                 BackColor = Color.FromArgb(22, 22, 35),
                 Margin = new Padding(0, 8, 0, 0)
             };
-            splitLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45f));  
-            splitLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55f));  
-            splitLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 34f));       
-            splitLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));       
+            geteiltesLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45f));  
+            geteiltesLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55f));  
+            geteiltesLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 34f));       
+            geteiltesLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));       
 
             var lblRanglisteTitel = new Label
             {
@@ -237,7 +237,7 @@ namespace WMTippTool.Forms
                 GridColor = Color.FromArgb(60, 60, 80),
                 Margin = new Padding(0, 0, 6, 0)
             };
-            StyleDataGridView(dgvRangliste, Color.FromArgb(180, 100, 0)); // Orangener Kopf
+            TabelleStylen(dgvRangliste, Color.FromArgb(180, 100, 0)); // Orangener Kopf
 
             // Rechte Tabelle (Wer hat wie für dieses Spiel getippt?)
             dgvSpieleTipps = new DataGridView
@@ -255,12 +255,12 @@ namespace WMTippTool.Forms
                 GridColor = Color.FromArgb(60, 60, 80),
                 Margin = new Padding(6, 0, 0, 0)
             };
-            StyleDataGridView(dgvSpieleTipps, Color.FromArgb(16, 137, 62)); // Grüner Kopf
+            TabelleStylen(dgvSpieleTipps, Color.FromArgb(16, 137, 62)); // Grüner Kopf
 
-            splitLayout.Controls.Add(lblRanglisteTitel, 0, 0);
-            splitLayout.Controls.Add(lblTippsTitle, 1, 0);
-            splitLayout.Controls.Add(dgvRangliste, 0, 1);
-            splitLayout.Controls.Add(dgvSpieleTipps, 1, 1);
+            geteiltesLayout.Controls.Add(lblRanglisteTitel, 0, 0);
+            geteiltesLayout.Controls.Add(lblTippsTitle, 1, 0);
+            geteiltesLayout.Controls.Add(dgvRangliste, 0, 1);
+            geteiltesLayout.Controls.Add(dgvSpieleTipps, 1, 1);
 
             // ----- 4. Button-Leiste unten -----
             var btnPanel = new FlowLayoutPanel
@@ -305,22 +305,22 @@ namespace WMTippTool.Forms
             btnPanel.Controls.AddRange(new Control[] { btnRefresh, btnZurueck });
 
             // Alles ins Root-Layout einfügen
-            rootLayout.Controls.Add(lblTitel, 0, 0);
-            rootLayout.Controls.Add(pnlErgebnis, 0, 1);
-            rootLayout.Controls.Add(splitLayout, 0, 2);
-            rootLayout.Controls.Add(btnPanel, 0, 3);
+            hauptLayout.Controls.Add(lblTitel, 0, 0);
+            hauptLayout.Controls.Add(pnlErgebnis, 0, 1);
+            hauptLayout.Controls.Add(geteiltesLayout, 0, 2);
+            hauptLayout.Controls.Add(btnPanel, 0, 3);
 
-            this.Controls.Add(rootLayout);
+            this.Controls.Add(hauptLayout);
         }
 
         /// <summary>
         /// Wenn man im Dropdown ein anderes Spiel anklickt, rufen wir eine Methode auf,
         /// um die Tabelle auf der rechten Seite zu aktualisieren.
         /// </summary>
-        private void CboSpiele_SelectedIndexChanged(object? sender, EventArgs e)
+        private void CboSpiele_AuswahlGeaendert(object? sender, EventArgs e)
         {
             if (cboSpiele.SelectedIndex < 0) return;
-            int spielId = spielIds[cboSpiele.SelectedIndex];
+            int spielId = spielIDs[cboSpiele.SelectedIndex];
             LadeTippsZuSpiel(spielId);
         }
 
@@ -331,7 +331,7 @@ namespace WMTippTool.Forms
         /// 3. Wir berechnen für jeden Tipp die Punkte (3 Punkte für exakt, 1 für Tendenz).
         /// 4. Wir speichern die Punkte bei den Tipps (UPDATE tipps).
         /// </summary>
-        private void BtnErgebnisEintragen_Click(object? sender, EventArgs e)
+        private void BtnErgebnisEintragen_Klick(object? sender, EventArgs e)
         {
             if (cboSpiele.SelectedIndex < 0)
             {
@@ -340,7 +340,7 @@ namespace WMTippTool.Forms
                 return;
             }
 
-            int spielId = spielIds[cboSpiele.SelectedIndex];
+            int spielId = spielIDs[cboSpiele.SelectedIndex];
             int e1 = (int)nudErgebnisTeam1.Value; // Echtes Ergebnis Team 1
             int e2 = (int)nudErgebnisTeam2.Value; // Echtes Ergebnis Team 2
             string spielName = cboSpiele.SelectedItem?.ToString() ?? "Unbekannt";
@@ -353,13 +353,13 @@ namespace WMTippTool.Forms
 
             try
             {
-                using var conn = DBConnection.GetConnection();
+                using var conn = DatenbankVerbindung.VerbindungAbrufen();
                 conn.Open();
 
                 // SCHRITT 1: Speichere das Ergebnis im Spiel!
                 string updateSpiel = "UPDATE spiele SET ergebnis_team1 = @e1, ergebnis_team2 = @e2 WHERE id = @sid";
                 
-                QueryLogger.Log($"UPDATE spiele SET ergebnis_team1 = {e1}, ergebnis_team2 = {e2} WHERE id = {spielId}");
+                SQLProtokollierer.Protokollieren($"UPDATE spiele SET ergebnis_team1 = {e1}, ergebnis_team2 = {e2} WHERE id = {spielId}");
 
                 using (var cmd = new MySqlCommand(updateSpiel, conn))
                 {
@@ -371,7 +371,7 @@ namespace WMTippTool.Forms
 
                 // SCHRITT 2: Lade alle Tipps, die Schüler für dieses Spiel abgegeben haben.
                 string ladeTipps = "SELECT id, tipp_team1, tipp_team2 FROM tipps WHERE spiel_id = @sid";
-                QueryLogger.Log($"SELECT id, tipp_team1, tipp_team2 FROM tipps WHERE spiel_id = {spielId}");
+                SQLProtokollierer.Protokollieren($"SELECT id, tipp_team1, tipp_team2 FROM tipps WHERE spiel_id = {spielId}");
 
                 using var tippCmd = new MySqlCommand(ladeTipps, conn);
                 tippCmd.Parameters.AddWithValue("@sid", spielId);
@@ -392,7 +392,7 @@ namespace WMTippTool.Forms
                     
                     // Speichere die verdienten Punkte für diesen Nutzer in der Datenbank
                     string updateTipp = "UPDATE tipps SET punkte = @punkte WHERE id = @id";
-                    QueryLogger.Log($"UPDATE tipps SET punkte = {punkte} WHERE id = {id}"); // Log fürs Terminal
+                    SQLProtokollierer.Protokollieren($"UPDATE tipps SET punkte = {punkte} WHERE id = {id}"); // Protokollieren fürs Terminal
 
                     using var updateCmd = new MySqlCommand(updateTipp, conn);
                     updateCmd.Parameters.AddWithValue("@punkte", punkte);
@@ -443,23 +443,23 @@ namespace WMTippTool.Forms
         /// </summary>
         private void LadeSpieleFuerErgebnis()
         {
-            spielIds.Clear();
+            spielIDs.Clear();
             cboSpiele.Items.Clear();
 
             try
             {
-                using var conn = DBConnection.GetConnection();
+                using var conn = DatenbankVerbindung.VerbindungAbrufen();
                 conn.Open();
                 string sql = @"SELECT id, team1, team2, datum, ergebnis_team1, ergebnis_team2 
                                FROM spiele ORDER BY datum DESC";
-                QueryLogger.Log(sql);
+                SQLProtokollierer.Protokollieren(sql);
 
                 using var cmd = new MySqlCommand(sql, conn);
                 using var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    spielIds.Add(reader.GetInt32("id"));
+                    spielIDs.Add(reader.GetInt32("id"));
                     string datum = reader.GetDateTime("datum").ToString("dd.MM.yyyy HH:mm");
                     
                     // Prüfen, ob schon ein Ergebnis da ist.
@@ -487,7 +487,7 @@ namespace WMTippTool.Forms
         {
             try
             {
-                using var conn = DBConnection.GetConnection();
+                using var conn = DatenbankVerbindung.VerbindungAbrufen();
                 conn.Open();
                 
                 // Wir fügen ein "CASE WHEN" hinzu. Das ist wie ein IF im SQL.
@@ -504,7 +504,7 @@ namespace WMTippTool.Forms
                                WHERE t.spiel_id = @sid
                                ORDER BY t.punkte DESC, t.benutzername ASC";
                                
-                QueryLogger.Log($"Lade Tipps für Spiel ID {spielId} ...");
+                SQLProtokollierer.Protokollieren($"Lade Tipps für Spiel ID {spielId} ...");
 
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@sid", spielId);
@@ -528,7 +528,7 @@ namespace WMTippTool.Forms
         {
             try
             {
-                using var conn = DBConnection.GetConnection();
+                using var conn = DatenbankVerbindung.VerbindungAbrufen();
                 conn.Open();
                 
                 // Erläuterung für die Präsentation:
@@ -547,7 +547,7 @@ namespace WMTippTool.Forms
                                GROUP BY benutzername
                                ORDER BY Gesamtpunkte DESC";
                                
-                QueryLogger.Log(sql);
+                SQLProtokollierer.Protokollieren(sql);
 
                 using var adapter = new MySqlDataAdapter(sql, conn);
                 var table = new System.Data.DataTable();
@@ -555,8 +555,8 @@ namespace WMTippTool.Forms
                 dgvRangliste.DataSource = table;
 
                 // Event abonnieren, um die Zeilen von Platz 1, 2 und 3 golden/silber/bronze zu färben!
-                dgvRangliste.RowPrePaint -= DgvRangliste_RowPrePaint;
-                dgvRangliste.RowPrePaint += DgvRangliste_RowPrePaint;
+                dgvRangliste.RowPrePaint -= DgvRangliste_ZeileVorZeichnen;
+                dgvRangliste.RowPrePaint += DgvRangliste_ZeileVorZeichnen;
             }
             catch (Exception ex)
             {
@@ -568,7 +568,7 @@ namespace WMTippTool.Forms
         /// <summary>
         /// Färbt die ersten 3 Plätze der Rangliste ein! (Gold, Silber, Bronze)
         /// </summary>
-        private void DgvRangliste_RowPrePaint(object? sender, DataGridViewRowPrePaintEventArgs e)
+        private void DgvRangliste_ZeileVorZeichnen(object? sender, DataGridViewRowPrePaintEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= dgvRangliste.Rows.Count) return;
             var row = dgvRangliste.Rows[e.RowIndex];
@@ -586,7 +586,7 @@ namespace WMTippTool.Forms
         // =========================================================
         // Hilfsmethoden fürs Design
         // =========================================================
-        private static Label StyleLabel(string text) => new Label
+        private static Label LabelStylen(string text) => new Label
         {
             Text = text,
             Font = new Font("Segoe UI", 10, FontStyle.Bold),
@@ -595,7 +595,7 @@ namespace WMTippTool.Forms
             TextAlign = ContentAlignment.MiddleLeft
         };
 
-        private static NumericUpDown CreateNumericUpDown() => new NumericUpDown
+        private static NumericUpDown ZahlenFeldErstellen() => new NumericUpDown
         {
             Minimum = 0,
             Maximum = 30,
@@ -608,7 +608,7 @@ namespace WMTippTool.Forms
             Margin = new Padding(0, 2, 8, 0)
         };
 
-        private static void StyleDataGridView(DataGridView dgv, Color headerAccent)
+        private static void TabelleStylen(DataGridView dgv, Color headerAccent)
         {
             dgv.DefaultCellStyle.BackColor = Color.FromArgb(28, 28, 45);
             dgv.DefaultCellStyle.ForeColor = Color.White;

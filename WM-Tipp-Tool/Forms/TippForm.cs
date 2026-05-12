@@ -14,30 +14,30 @@ namespace WMTippTool.Forms
     public class TippForm : Form
     {
         // === Unsere Bausteine für dieses Fenster ===
-        private ComboBox cboSpiele = null!; // Dropdown-Menü für die Spieleauswahl
-        private TextBox txtBenutzername = null!; // Textfeld für den eigenen Namen
-        private NumericUpDown nudTippTeam1 = null!; // Zahlenfeld für Tore von Team 1
-        private NumericUpDown nudTippTeam2 = null!; // Zahlenfeld für Tore von Team 2
-        private Button btnTippSpeichern = null!; // Button zum Speichern
-        private DataGridView dgvTipps = null!; // Tabelle, in der alle Tipps stehen
-        private Label lblSpielLabel = null!; // Kleiner Hinweis-Text unter dem Dropdown
+        private ComboBox cboSpiele;       // Dropdown-Menü für die Spieleauswahl
+        private TextBox txtBenutzername;  // Textfeld für den eigenen Namen
+        private NumericUpDown nudTippTeam1; // Zahlenfeld für Tore von Team 1
+        private NumericUpDown nudTippTeam2; // Zahlenfeld für Tore von Team 2
+        private Button btnTippSpeichern;  // Button zum Speichern
+        private DataGridView dgvTipps;    // Tabelle, in der alle Tipps stehen
+        private Label lblSpielHinweis;      // Kleiner Hinweis-Text unter dem Dropdown
 
         // Eine Liste, um uns im Hintergrund die echten IDs der Spiele zu merken.
-        // Das Dropdown zeigt ja nur Text ("Deutschland vs. Spanien") an, 
+        // Das Dropdown zeigt ja nur Text ("Deutschland vs. Spanien") an,
         // wir brauchen für die Datenbank aber die ID (z.B. "5").
-        private List<int> spielIds = new();
+        private List<int> spielIDs = new List<int>();
 
         public TippForm()
         {
-            InitializeComponent(); // Baut das Fenster auf
-            LadeOffeneSpiele(); // Füllt das Dropdown mit Spielen, die noch kein Ergebnis haben
-            LadeTipps(); // Lädt alle bisherigen Tipps in die Tabelle
+            KomponentenInitialisieren(); // Baut das Fenster auf
+            LadeOffeneSpiele();    // Füllt das Dropdown mit Spielen, die noch kein Ergebnis haben
+            LadeTipps();           // Lädt alle bisherigen Tipps in die Tabelle
         }
 
         /// <summary>
         /// Hier wird das Design des Fensters gebaut.
         /// </summary>
-        private void InitializeComponent()
+        private void KomponentenInitialisieren()
         {
             // Fenstereinstellungen
             this.Text = "✏️ Tipp abgeben";
@@ -49,263 +49,242 @@ namespace WMTippTool.Forms
             this.AutoScaleMode = AutoScaleMode.Dpi;
 
             // ===== Haupt-Layout =====
-            var rootLayout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 1,
-                RowCount = 5,
-                BackColor = Color.FromArgb(22, 22, 35),
-                Padding = new Padding(14, 10, 14, 10)
-            };
+            TableLayoutPanel hauptLayout = new TableLayoutPanel();
+            hauptLayout.Dock = DockStyle.Fill;
+            hauptLayout.ColumnCount = 1;
+            hauptLayout.RowCount = 5;
+            hauptLayout.BackColor = Color.FromArgb(22, 22, 35);
+            hauptLayout.Padding = new Padding(14, 10, 14, 10);
+
             // 5 Zeilen: Titel | Eingabekasten | "Alle Tipps" Text | Tabelle | Buttons unten
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 52f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 215f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 36f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-            rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 55f));
-            rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 52f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 215f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 36f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+            hauptLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 55f));
+            hauptLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
             // ----- Titel -----
-            var lblTitel = new Label
-            {
-                Text = "✏️ Tipp abgeben",
-                Font = new Font("Segoe UI", 20, FontStyle.Bold),
-                ForeColor = Color.FromArgb(255, 210, 0),
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
+            Label lblTitel = new Label();
+            lblTitel.Text = "✏️ Tipp abgeben";
+            lblTitel.Font = new Font("Segoe UI", 20, FontStyle.Bold);
+            lblTitel.ForeColor = Color.FromArgb(255, 210, 0);
+            lblTitel.Dock = DockStyle.Fill;
+            lblTitel.TextAlign = ContentAlignment.MiddleLeft;
 
             // ----- Eingabekasten -----
-            var pnlInput = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(35, 35, 55),
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(14, 8, 14, 8)
-            };
+            Panel pnlEingabe = new Panel();
+            pnlEingabe.Dock = DockStyle.Fill;
+            pnlEingabe.BackColor = Color.FromArgb(35, 35, 55);
+            pnlEingabe.BorderStyle = BorderStyle.FixedSingle;
+            pnlEingabe.Padding = new Padding(14, 8, 14, 8);
 
-            var inputLayout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2, // Links das Label (Beschreibung), Rechts das Eingabefeld
-                RowCount = 4,
-                BackColor = Color.FromArgb(35, 35, 55)
-            };
-            inputLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190f)); 
-            inputLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));  
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 25f));  
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 26f)); 
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 25f));  
-            inputLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 50f));  
+            TableLayoutPanel eingabeLayout = new TableLayoutPanel();
+            eingabeLayout.Dock = DockStyle.Fill;
+            eingabeLayout.ColumnCount = 2; // Links das Label (Beschreibung), Rechts das Eingabefeld
+            eingabeLayout.RowCount = 4;
+            eingabeLayout.BackColor = Color.FromArgb(35, 35, 55);
+            eingabeLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190f));
+            eingabeLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            eingabeLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 25f));
+            eingabeLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 26f));
+            eingabeLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 25f));
+            eingabeLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 50f));
 
             // Zeile 0: Spiel-Auswahl (Dropdown)
-            var lblSpiel = StyleLabel("Spiel auswählen:");
-            cboSpiele = new ComboBox
-            {
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.FromArgb(50, 50, 70),
-                ForeColor = Color.White,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                FlatStyle = FlatStyle.Flat,
-                Margin = new Padding(0, 4, 0, 2)
-            };
+            Label lblSpiel = LabelStylen("Spiel auswählen:");
+            cboSpiele = new ComboBox();
+            cboSpiele.Dock = DockStyle.Fill;
+            cboSpiele.Font = new Font("Segoe UI", 11);
+            cboSpiele.BackColor = Color.FromArgb(50, 50, 70);
+            cboSpiele.ForeColor = Color.White;
+            cboSpiele.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboSpiele.FlatStyle = FlatStyle.Flat;
+            cboSpiele.Margin = new Padding(0, 4, 0, 2);
             // Wenn man ein anderes Spiel auswählt, passiert etwas!
-            cboSpiele.SelectedIndexChanged += CboSpiele_SelectedIndexChanged;
-            inputLayout.Controls.Add(lblSpiel, 0, 0);
-            inputLayout.Controls.Add(cboSpiele, 1, 0);
+            cboSpiele.SelectedIndexChanged += CboSpiele_AuswahlGeaendert;
+            eingabeLayout.Controls.Add(lblSpiel, 0, 0);
+            eingabeLayout.Controls.Add(cboSpiele, 1, 0);
 
             // Zeile 1: Status-Label ("Kein Spiel ausgewählt")
-            lblSpielLabel = new Label
-            {
-                Text = "Kein Spiel ausgewählt",
-                Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                ForeColor = Color.Gray,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(190, 0, 0, 0)
-            };
-            inputLayout.Controls.Add(lblSpielLabel, 0, 1);
-            inputLayout.SetColumnSpan(lblSpielLabel, 2);
+            lblSpielHinweis = new Label();
+            lblSpielHinweis.Text = "Kein Spiel ausgewählt";
+            lblSpielHinweis.Font = new Font("Segoe UI", 10, FontStyle.Italic);
+            lblSpielHinweis.ForeColor = Color.Gray;
+            lblSpielHinweis.Dock = DockStyle.Fill;
+            lblSpielHinweis.TextAlign = ContentAlignment.MiddleLeft;
+            lblSpielHinweis.Padding = new Padding(190, 0, 0, 0);
+            eingabeLayout.Controls.Add(lblSpielHinweis, 0, 1);
+            eingabeLayout.SetColumnSpan(lblSpielHinweis, 2);
 
             // Zeile 2: Benutzername Eingabe
-            var lblBenutzer = StyleLabel("Ihr Name:");
-            txtBenutzername = new TextBox
-            {
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.FromArgb(50, 50, 70),
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
-                Margin = new Padding(0, 4, 0, 4)
-            };
-            inputLayout.Controls.Add(lblBenutzer, 0, 2);
-            inputLayout.Controls.Add(txtBenutzername, 1, 2);
+            Label lblBenutzer = LabelStylen("Ihr Name:");
+            txtBenutzername = new TextBox();
+            txtBenutzername.Dock = DockStyle.Fill;
+            txtBenutzername.Font = new Font("Segoe UI", 11);
+            txtBenutzername.BackColor = Color.FromArgb(50, 50, 70);
+            txtBenutzername.ForeColor = Color.White;
+            txtBenutzername.BorderStyle = BorderStyle.FixedSingle;
+            txtBenutzername.Margin = new Padding(0, 4, 0, 4);
+            eingabeLayout.Controls.Add(lblBenutzer, 0, 2);
+            eingabeLayout.Controls.Add(txtBenutzername, 1, 2);
 
             // Zeile 3: Tore tippen und Button
-            var lblTipp = StyleLabel("Ihr Tipp:");
+            Label lblTipp = LabelStylen("Ihr Tipp:");
 
             // Ein kleiner extra Container (FlowLayoutPanel) nur für die Tore-Zahlen
-            var tippFlow = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.LeftToRight,
-                BackColor = Color.FromArgb(35, 35, 55),
-                WrapContents = false,
-                Padding = new Padding(0, 4, 0, 4)
-            };
+            FlowLayoutPanel tippFlussLayout = new FlowLayoutPanel();
+            tippFlussLayout.Dock = DockStyle.Fill;
+            tippFlussLayout.FlowDirection = FlowDirection.LeftToRight;
+            tippFlussLayout.BackColor = Color.FromArgb(35, 35, 55);
+            tippFlussLayout.WrapContents = false;
+            tippFlussLayout.Padding = new Padding(0, 4, 0, 4);
 
-            var lblTeam1 = new Label
-            {
-                Text = "Team 1:",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                ForeColor = Color.FromArgb(180, 180, 210),
-                AutoSize = true,
-                Margin = new Padding(0, 6, 6, 0)
-            };
+            Label lblTeam1 = new Label();
+            lblTeam1.Text = "Team 1:";
+            lblTeam1.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblTeam1.ForeColor = Color.FromArgb(180, 180, 210);
+            lblTeam1.AutoSize = true;
+            lblTeam1.Margin = new Padding(0, 6, 6, 0);
 
-            nudTippTeam1 = CreateNumericUpDown(); // Zahlenfeld von 0 bis 30
+            nudTippTeam1 = ZahlenFeldErstellen(); // Zahlenfeld von 0 bis 30
 
-            var lblDoppelpunkt = new Label
-            {
-                Text = ":",
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                ForeColor = Color.White,
-                AutoSize = true,
-                Margin = new Padding(6, 2, 6, 0)
-            };
+            Label lblDoppelpunkt = new Label();
+            lblDoppelpunkt.Text = ":";
+            lblDoppelpunkt.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            lblDoppelpunkt.ForeColor = Color.White;
+            lblDoppelpunkt.AutoSize = true;
+            lblDoppelpunkt.Margin = new Padding(6, 2, 6, 0);
 
-            var lblTeam2 = new Label
-            {
-                Text = "Team 2:",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                ForeColor = Color.FromArgb(180, 180, 210),
-                AutoSize = true,
-                Margin = new Padding(0, 6, 6, 0)
-            };
+            Label lblTeam2 = new Label();
+            lblTeam2.Text = "Team 2:";
+            lblTeam2.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblTeam2.ForeColor = Color.FromArgb(180, 180, 210);
+            lblTeam2.AutoSize = true;
+            lblTeam2.Margin = new Padding(0, 6, 6, 0);
 
-            nudTippTeam2 = CreateNumericUpDown();
+            nudTippTeam2 = ZahlenFeldErstellen();
 
-            btnTippSpeichern = new Button
-            {
-                Text = "✅ Tipp speichern",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                BackColor = Color.FromArgb(16, 137, 62), // Grün
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Height = 38,
-                Width = 220,
-                Margin = new Padding(20, 2, 0, 0)
-            };
+            btnTippSpeichern = new Button();
+            btnTippSpeichern.Text = "✅ Tipp speichern";
+            btnTippSpeichern.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            btnTippSpeichern.BackColor = Color.FromArgb(16, 137, 62); // Grün
+            btnTippSpeichern.ForeColor = Color.White;
+            btnTippSpeichern.FlatStyle = FlatStyle.Flat;
+            btnTippSpeichern.Cursor = Cursors.Hand;
+            btnTippSpeichern.Height = 38;
+            btnTippSpeichern.Width = 220;
+            btnTippSpeichern.Margin = new Padding(20, 2, 0, 0);
             btnTippSpeichern.FlatAppearance.BorderSize = 0;
-            btnTippSpeichern.Click += BtnTippSpeichern_Click;
+            btnTippSpeichern.Click += BtnTippSpeichern_Klick;
 
-            tippFlow.Controls.AddRange(new Control[]
+            tippFlussLayout.Controls.AddRange(new Control[]
             {
                 lblTeam1, nudTippTeam1, lblDoppelpunkt, lblTeam2, nudTippTeam2, btnTippSpeichern
             });
 
-            inputLayout.Controls.Add(lblTipp, 0, 3);
-            inputLayout.Controls.Add(tippFlow, 1, 3);
+            eingabeLayout.Controls.Add(lblTipp, 0, 3);
+            eingabeLayout.Controls.Add(tippFlussLayout, 1, 3);
 
-            pnlInput.Controls.Add(inputLayout);
+            pnlEingabe.Controls.Add(eingabeLayout);
 
             // ----- Label über der Tabelle -----
-            var lblAllleTipps = new Label
-            {
-                Text = "📋 Alle abgegebenen Tipps:",
-                Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                ForeColor = Color.FromArgb(180, 180, 220),
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.BottomLeft,
-                Padding = new Padding(0, 0, 0, 2)
-            };
+            Label lblAllleTipps = new Label();
+            lblAllleTipps.Text = "📋 Alle abgegebenen Tipps:";
+            lblAllleTipps.Font = new Font("Segoe UI", 13, FontStyle.Bold);
+            lblAllleTipps.ForeColor = Color.FromArgb(180, 180, 220);
+            lblAllleTipps.Dock = DockStyle.Fill;
+            lblAllleTipps.TextAlign = ContentAlignment.BottomLeft;
+            lblAllleTipps.Padding = new Padding(0, 0, 0, 2);
 
             // ----- Tabelle (DataGridView) -----
-            dgvTipps = new DataGridView
-            {
-                Dock = DockStyle.Fill,
-                BackgroundColor = Color.FromArgb(28, 28, 45),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(60, 60, 80),
-                Margin = new Padding(0, 4, 0, 4)
-            };
-            StyleDataGridView(dgvTipps);
+            dgvTipps = new DataGridView();
+            dgvTipps.Dock = DockStyle.Fill;
+            dgvTipps.BackgroundColor = Color.FromArgb(28, 28, 45);
+            dgvTipps.BorderStyle = BorderStyle.None;
+            dgvTipps.RowHeadersVisible = false;
+            dgvTipps.AllowUserToAddRows = false;
+            dgvTipps.AllowUserToDeleteRows = false;
+            dgvTipps.ReadOnly = true;
+            dgvTipps.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvTipps.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvTipps.Font = new Font("Segoe UI", 10);
+            dgvTipps.GridColor = Color.FromArgb(60, 60, 80);
+            dgvTipps.Margin = new Padding(0, 4, 0, 4);
+            TabelleStylen(dgvTipps);
 
             // ----- Buttons ganz unten -----
-            var btnPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.LeftToRight,
-                BackColor = Color.FromArgb(22, 22, 35),
-                WrapContents = false,
-                Padding = new Padding(0, 6, 0, 0)
-            };
+            FlowLayoutPanel btnPanel = new FlowLayoutPanel();
+            btnPanel.Dock = DockStyle.Fill;
+            btnPanel.FlowDirection = FlowDirection.LeftToRight;
+            btnPanel.BackColor = Color.FromArgb(22, 22, 35);
+            btnPanel.WrapContents = false;
+            btnPanel.Padding = new Padding(0, 6, 0, 0);
 
-            var btnAktualisieren = new Button
-            {
-                Text = "🔄 Tipps aktualisieren",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(60, 60, 90),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Height = 40,
-                Width = 240,
-                Margin = new Padding(0, 0, 10, 0)
-            };
+            Button btnAktualisieren = new Button();
+            btnAktualisieren.Text = "🔄 Tipps aktualisieren";
+            btnAktualisieren.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnAktualisieren.BackColor = Color.FromArgb(60, 60, 90);
+            btnAktualisieren.ForeColor = Color.White;
+            btnAktualisieren.FlatStyle = FlatStyle.Flat;
+            btnAktualisieren.Cursor = Cursors.Hand;
+            btnAktualisieren.Height = 40;
+            btnAktualisieren.Width = 240;
+            btnAktualisieren.Margin = new Padding(0, 0, 10, 0);
             btnAktualisieren.FlatAppearance.BorderSize = 0;
-            btnAktualisieren.Click += (s, e) => LadeTipps();
+            btnAktualisieren.Click += BtnAktualisieren_Klick;
 
-            var btnZurueck = new Button
-            {
-                Text = "← Zurück zum Menü",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(50, 50, 75),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Height = 40,
-                Width = 220,
-                Margin = new Padding(0, 0, 0, 0)
-            };
+            Button btnZurueck = new Button();
+            btnZurueck.Text = "← Zurück zum Menü";
+            btnZurueck.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btnZurueck.BackColor = Color.FromArgb(50, 50, 75);
+            btnZurueck.ForeColor = Color.White;
+            btnZurueck.FlatStyle = FlatStyle.Flat;
+            btnZurueck.Cursor = Cursors.Hand;
+            btnZurueck.Height = 40;
+            btnZurueck.Width = 220;
+            btnZurueck.Margin = new Padding(0, 0, 0, 0);
             btnZurueck.FlatAppearance.BorderSize = 0;
-            btnZurueck.Click += (s, e) => this.Close();
+            btnZurueck.Click += BtnZurueck_Klick;
 
             btnPanel.Controls.AddRange(new Control[] { btnAktualisieren, btnZurueck });
 
             // Alles zusammensetzen
-            rootLayout.Controls.Add(lblTitel, 0, 0);
-            rootLayout.Controls.Add(pnlInput, 0, 1);
-            rootLayout.Controls.Add(lblAllleTipps, 0, 2);
-            rootLayout.Controls.Add(dgvTipps, 0, 3);
-            rootLayout.Controls.Add(btnPanel, 0, 4);
+            hauptLayout.Controls.Add(lblTitel, 0, 0);
+            hauptLayout.Controls.Add(pnlEingabe, 0, 1);
+            hauptLayout.Controls.Add(lblAllleTipps, 0, 2);
+            hauptLayout.Controls.Add(dgvTipps, 0, 3);
+            hauptLayout.Controls.Add(btnPanel, 0, 4);
 
-            this.Controls.Add(rootLayout);
+            this.Controls.Add(hauptLayout);
+        }
+
+        private void BtnAktualisieren_Klick(object sender, EventArgs e)
+        {
+            LadeTipps();
+        }
+
+        private void BtnZurueck_Klick(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         /// <summary>
         /// Wenn man im Dropdown ein Spiel auswählt, ändert sich der Text darunter.
         /// </summary>
-        private void CboSpiele_SelectedIndexChanged(object? sender, EventArgs e)
+        private void CboSpiele_AuswahlGeaendert(object sender, EventArgs e)
         {
             if (cboSpiele.SelectedIndex >= 0)
-                lblSpielLabel.Text = "✓ Spiel ausgewählt";
+            {
+                lblSpielHinweis.Text = "✓ Spiel ausgewählt";
+            }
         }
 
         /// <summary>
         /// Wird ausgeführt, wenn man auf "Tipp speichern" drückt.
         /// Hier wird der Tipp in die MySQL Datenbank eingetragen.
         /// </summary>
-        private void BtnTippSpeichern_Click(object? sender, EventArgs e)
+        private void BtnTippSpeichern_Klick(object sender, EventArgs e)
         {
             // Hat der Nutzer überhaupt ein Spiel im Dropdown ausgewählt?
             if (cboSpiele.SelectedIndex < 0)
@@ -324,63 +303,71 @@ namespace WMTippTool.Forms
             }
 
             // Wir holen uns die echte Spiel-ID aus unserer geheimen Liste im Hintergrund
-            int spielId = spielIds[cboSpiele.SelectedIndex];
+            int spielId = spielIDs[cboSpiele.SelectedIndex];
             int t1 = (int)nudTippTeam1.Value;
             int t2 = (int)nudTippTeam2.Value;
 
             try
             {
-                using var conn = DBConnection.GetConnection();
-                conn.Open();
-
-                // 1. Zuerst prüfen wir, ob dieser Name für dieses Spiel schon getippt hat.
-                // Wir zählen einfach (COUNT), wie viele Tipps es von ihm für das Spiel gibt.
-                string checkSql = "SELECT COUNT(*) FROM tipps WHERE spiel_id = @sid AND benutzername = @name";
-                
-                // Wir loggen den Befehl (mit Werten eingefügt, damit man es im Terminal lesen kann)
-                QueryLogger.Log($"SELECT COUNT(*) FROM tipps WHERE spiel_id = {spielId} AND benutzername = '{name}'");
-
-                using var checkCmd = new MySqlCommand(checkSql, conn);
-                checkCmd.Parameters.AddWithValue("@sid", spielId);
-                checkCmd.Parameters.AddWithValue("@name", name);
-                long count = (long)checkCmd.ExecuteScalar()!; // Führt den Befehl aus und gibt die Zahl zurück
-
-                // Wenn er schon getippt hat (count > 0), brechen wir ab!
-                if (count > 0)
+                using (MySqlConnection conn = DatenbankVerbindung.VerbindungAbrufen())
                 {
+                    conn.Open();
+
+                    // 1. Zuerst prüfen wir, ob dieser Name für dieses Spiel schon getippt hat.
+                    // Wir zählen einfach (COUNT), wie viele Tipps es von ihm für das Spiel gibt.
+                    string checkSql = "SELECT COUNT(*) FROM tipps WHERE spiel_id = @sid AND benutzername = @name";
+
+                    // Wir loggen den Befehl (mit Werten eingefügt, damit man es im Terminal lesen kann)
+                    SQLProtokollierer.Protokollieren("SELECT COUNT(*) FROM tipps WHERE spiel_id = " + spielId + " AND benutzername = '" + name + "'");
+
+                    long count = 0;
+                    using (MySqlCommand checkCmd = new MySqlCommand(checkSql, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@sid", spielId);
+                        checkCmd.Parameters.AddWithValue("@name", name);
+                        count = (long)checkCmd.ExecuteScalar(); // Führt den Befehl aus und gibt die Zahl zurück
+                    }
+
+                    // Wenn er schon getippt hat (count > 0), brechen wir ab!
+                    if (count > 0)
+                    {
+                        MessageBox.Show(
+                            "'" + name + "' hat für dieses Spiel bereits einen Tipp abgegeben!\nJeder Benutzer kann pro Spiel nur einmal tippen.",
+                            "Tipp bereits vorhanden", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // 2. Wenn wir hier sind, darf er tippen. Wir fügen den Tipp ein (INSERT).
+                    string sql = "INSERT INTO tipps (spiel_id, benutzername, tipp_team1, tipp_team2) VALUES (@sid, @name, @t1, @t2)";
+
+                    SQLProtokollierer.Protokollieren("INSERT INTO tipps (spiel_id, benutzername, tipp_team1, tipp_team2) VALUES ("
+                        + spielId + ", '" + name + "', " + t1 + ", " + t2 + ")");
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@sid", spielId);
+                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Parameters.AddWithValue("@t1", t1);
+                        cmd.Parameters.AddWithValue("@t2", t2);
+                        cmd.ExecuteNonQuery(); // Tipp wird in MySQL gespeichert!
+                    }
+
                     MessageBox.Show(
-                        $"'{name}' hat für dieses Spiel bereits einen Tipp abgegeben!\nJeder Benutzer kann pro Spiel nur einmal tippen.",
-                        "Tipp bereits vorhanden", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                        "Tipp von '" + name + "' (" + t1 + ":" + t2 + ") wurde erfolgreich gespeichert!",
+                        "Tipp gespeichert", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Felder wieder aufräumen
+                    txtBenutzername.Clear();
+                    nudTippTeam1.Value = 0;
+                    nudTippTeam2.Value = 0;
+
+                    // Tabelle aktualisieren, damit der neue Tipp direkt sichtbar wird
+                    LadeTipps();
                 }
-
-                // 2. Wenn wir hier sind, darf er tippen. Wir fügen den Tipp ein (INSERT).
-                string sql = "INSERT INTO tipps (spiel_id, benutzername, tipp_team1, tipp_team2) VALUES (@sid, @name, @t1, @t2)";
-                
-                QueryLogger.Log($"INSERT INTO tipps (spiel_id, benutzername, tipp_team1, tipp_team2) VALUES ({spielId}, '{name}', {t1}, {t2})");
-
-                using var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@sid", spielId);
-                cmd.Parameters.AddWithValue("@name", name);
-                cmd.Parameters.AddWithValue("@t1", t1);
-                cmd.Parameters.AddWithValue("@t2", t2);
-                cmd.ExecuteNonQuery(); // Tipp wird in MySQL gespeichert!
-
-                MessageBox.Show(
-                    $"Tipp von '{name}' ({t1}:{t2}) wurde erfolgreich gespeichert!",
-                    "Tipp gespeichert", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Felder wieder aufräumen
-                txtBenutzername.Clear();
-                nudTippTeam1.Value = 0;
-                nudTippTeam2.Value = 0;
-                
-                // Tabelle aktualisieren, damit der neue Tipp direkt sichtbar wird
-                LadeTipps();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Speichern des Tipps:\n{ex.Message}",
+                MessageBox.Show("Fehler beim Speichern des Tipps:\n" + ex.Message,
                     "Datenbankfehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -391,42 +378,47 @@ namespace WMTippTool.Forms
         /// </summary>
         private void LadeOffeneSpiele()
         {
-            spielIds.Clear();
+            spielIDs.Clear();
             cboSpiele.Items.Clear();
 
             try
             {
-                using var conn = DBConnection.GetConnection();
-                conn.Open();
-                
-                string sql = "SELECT id, team1, team2, datum FROM spiele WHERE ergebnis_team1 IS NULL ORDER BY datum ASC";
-                QueryLogger.Log(sql); // Logging
-
-                using var cmd = new MySqlCommand(sql, conn);
-                using var reader = cmd.ExecuteReader(); // Reader liest Zeile für Zeile aus MySQL
-
-                while (reader.Read()) // Solange es noch Zeilen gibt...
+                using (MySqlConnection conn = DatenbankVerbindung.VerbindungAbrufen())
                 {
-                    // ID geheim in unserer Liste speichern
-                    spielIds.Add(reader.GetInt32("id")); 
-                    
-                    // Schönen Text für das Dropdown zusammenbauen
-                    string datum = reader.GetDateTime("datum").ToString("dd.MM.yyyy HH:mm");
-                    cboSpiele.Items.Add($"{reader.GetString("team1")} vs. {reader.GetString("team2")} ({datum})");
-                }
+                    conn.Open();
 
-                // Wenn es gar keine Spiele gibt (z.B. frisch installiert)
-                if (cboSpiele.Items.Count == 0)
-                {
-                    cboSpiele.Items.Add("Keine offenen Spiele vorhanden");
-                    cboSpiele.Enabled = false; // Dropdown sperren
-                    btnTippSpeichern.Enabled = false; // Button sperren
-                    lblSpielLabel.Text = "Aktuell keine Spiele zum Tippen verfügbar.";
+                    string sql = "SELECT id, team1, team2, datum FROM spiele WHERE ergebnis_team1 IS NULL ORDER BY datum ASC";
+                    SQLProtokollierer.Protokollieren(sql); // Logging
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader()) // Reader liest Zeile für Zeile aus MySQL
+                        {
+                            while (reader.Read()) // Solange es noch Zeilen gibt...
+                            {
+                                // ID geheim in unserer Liste speichern
+                                spielIDs.Add(reader.GetInt32("id"));
+
+                                // Schönen Text für das Dropdown zusammenbauen
+                                string datum = reader.GetDateTime("datum").ToString("dd.MM.yyyy HH:mm");
+                                cboSpiele.Items.Add(reader.GetString("team1") + " vs. " + reader.GetString("team2") + " (" + datum + ")");
+                            }
+                        }
+                    }
+
+                    // Wenn es gar keine Spiele gibt (z.B. frisch installiert)
+                    if (cboSpiele.Items.Count == 0)
+                    {
+                        cboSpiele.Items.Add("Keine offenen Spiele vorhanden");
+                        cboSpiele.Enabled = false;         // Dropdown sperren
+                        btnTippSpeichern.Enabled = false;  // Button sperren
+                        lblSpielHinweis.Text = "Aktuell keine Spiele zum Tippen verfügbar.";
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Spiele:\n{ex.Message}",
+                MessageBox.Show("Fehler beim Laden der Spiele:\n" + ex.Message,
                     "Datenbankfehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -440,32 +432,38 @@ namespace WMTippTool.Forms
         {
             try
             {
-                using var conn = DBConnection.GetConnection();
-                conn.Open();
-                
-                // JOIN: Verbindet die Tabelle "tipps" (t) mit "spiele" (s) anhand der spiel_id.
-                string sql = @"SELECT t.id, CONCAT(s.team1, ' vs. ', s.team2) AS 'Spiel',
-                               t.benutzername AS 'Name', 
+                using (MySqlConnection conn = DatenbankVerbindung.VerbindungAbrufen())
+                {
+                    conn.Open();
+
+                    // JOIN: Verbindet die Tabelle "tipps" (t) mit "spiele" (s) anhand der spiel_id.
+                    string sql = @"SELECT t.id, CONCAT(s.team1, ' vs. ', s.team2) AS 'Spiel',
+                               t.benutzername AS 'Name',
                                CONCAT(t.tipp_team1, ':', t.tipp_team2) AS 'Tipp',
                                t.punkte AS 'Punkte'
                                FROM tipps t
                                JOIN spiele s ON t.spiel_id = s.id
                                ORDER BY s.datum ASC, t.benutzername ASC";
-                
-                QueryLogger.Log(sql); // Logging
 
-                using var adapter = new MySqlDataAdapter(sql, conn);
-                var table = new System.Data.DataTable();
-                adapter.Fill(table);
-                dgvTipps.DataSource = table;
+                    SQLProtokollierer.Protokollieren(sql); // Logging
 
-                // ID verstecken
-                if (dgvTipps.Columns.Contains("id"))
-                    dgvTipps.Columns["id"].Visible = false;
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(sql, conn))
+                    {
+                        System.Data.DataTable table = new System.Data.DataTable();
+                        adapter.Fill(table);
+                        dgvTipps.DataSource = table;
+                    }
+
+                    // ID verstecken
+                    if (dgvTipps.Columns.Contains("id"))
+                    {
+                        dgvTipps.Columns["id"].Visible = false;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Tipps:\n{ex.Message}",
+                MessageBox.Show("Fehler beim Laden der Tipps:\n" + ex.Message,
                     "Datenbankfehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -473,29 +471,33 @@ namespace WMTippTool.Forms
         // =========================================================
         // Hilfsmethoden fürs Design (Farben, Schriftart etc.)
         // =========================================================
-        private static Label StyleLabel(string text) => new Label
+        private static Label LabelStylen(string text)
         {
-            Text = text,
-            Font = new Font("Segoe UI", 10, FontStyle.Bold),
-            ForeColor = Color.FromArgb(180, 180, 210),
-            Dock = DockStyle.Fill,
-            TextAlign = ContentAlignment.MiddleLeft
-        };
+            Label lbl = new Label();
+            lbl.Text = text;
+            lbl.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lbl.ForeColor = Color.FromArgb(180, 180, 210);
+            lbl.Dock = DockStyle.Fill;
+            lbl.TextAlign = ContentAlignment.MiddleLeft;
+            return lbl;
+        }
 
-        private static NumericUpDown CreateNumericUpDown() => new NumericUpDown
+        private static NumericUpDown ZahlenFeldErstellen()
         {
-            Minimum = 0,
-            Maximum = 30, // Man kann maximal 30 Tore tippen :)
-            Value = 0,
-            Font = new Font("Segoe UI", 13, FontStyle.Bold),
-            BackColor = Color.FromArgb(50, 50, 70),
-            ForeColor = Color.White,
-            Width = 70,
-            Height = 36,
-            Margin = new Padding(0, 2, 8, 0)
-        };
+            NumericUpDown nud = new NumericUpDown();
+            nud.Minimum = 0;
+            nud.Maximum = 30; // Man kann maximal 30 Tore tippen :)
+            nud.Value = 0;
+            nud.Font = new Font("Segoe UI", 13, FontStyle.Bold);
+            nud.BackColor = Color.FromArgb(50, 50, 70);
+            nud.ForeColor = Color.White;
+            nud.Width = 70;
+            nud.Height = 36;
+            nud.Margin = new Padding(0, 2, 8, 0);
+            return nud;
+        }
 
-        private static void StyleDataGridView(DataGridView dgv)
+        private static void TabelleStylen(DataGridView dgv)
         {
             dgv.DefaultCellStyle.BackColor = Color.FromArgb(28, 28, 45);
             dgv.DefaultCellStyle.ForeColor = Color.White;
