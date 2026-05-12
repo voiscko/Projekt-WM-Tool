@@ -383,6 +383,14 @@ Beim ersten Start erstellt das Programm die Datenbank und alle Tabellen **automa
 
 ---
 
+## 👥 Team & Aufgabenverteilung
+
+- **Aylin**: Developer — [Tipp-Funktionalität](WM-Tipp-Tool/Formulare/TippForm.cs)
+- **Lian**: Developer — UI & [Spielverwaltung](WM-Tipp-Tool/Formulare/SpielForm.cs)
+- **Mark**: Alles andere + Zusammensetzen von allem (z.B. [Program.cs](WM-Tipp-Tool/Program.cs), [Datenbank/](WM-Tipp-Tool/Datenbank/))
+
+---
+
 <div align="center">
   <i>Entwickelt mit ❤️ für das Schulprojekt & die Weltmeisterschaft 2026.</i><br>
   <b>Ein Projekt von voiscko (Telegram: <a href="https://t.me/voiscko">@voiscko</a>)</b>
