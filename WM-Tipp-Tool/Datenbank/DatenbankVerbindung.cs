@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
  * Entwickler: voiscko (Telegram: @voiscko)
  */
 
-namespace WMTippTool.Database
+namespace WMTippTool.Datenbank
 {
     /// <summary>
     /// Diese Klasse ist quasi unser "Telefon" zur MySQL-Datenbank.

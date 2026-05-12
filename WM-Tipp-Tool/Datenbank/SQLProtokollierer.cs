@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WMTippTool.Database
+namespace WMTippTool.Datenbank
 {
     /// <summary>
     /// Diese Klasse ist unser "Gehirn" für das SQL-Terminal.

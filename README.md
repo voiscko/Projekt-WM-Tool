@@ -111,8 +111,8 @@ Das Tool nutzt ein faires und transparentes Punktesystem:
 Dieses Projekt wurde mit Blick auf Transparenz und Lehre entwickelt. Der gesamte Code ist **einsteigerfreundlich und vollständig auf Deutsch kommentiert**, um Team-Kollegen die Einarbeitung zu erleichtern.
 
 ### Integrierte Präsentations-Tools
-- 💻 **Live SQL-Terminal (`LogForm`):** Ein spezielles Fenster, das in Echtzeit alle `INSERT`, `UPDATE` und `SELECT` Befehle anzeigt. Perfekt, um im Unterricht zu erklären, was genau passiert, wenn man auf "Speichern" drückt!
-- 🗄️ **Rohdaten-Ansicht (`DatabaseViewForm`):** Ein ungeschönter, direkter Blick auf die MySQL-Tabellen, um zu beweisen, dass die Datenstruktur ordnungsgemäß gefüllt wird.
+- 💻 **Live SQL-Terminal (`ProtokollForm`):** Ein spezielles Fenster, das in Echtzeit alle `INSERT`, `UPDATE` und `SELECT` Befehle anzeigt. Perfekt, um im Unterricht zu erklären, was genau passiert, wenn man auf "Speichern" drückt!
+- 🗄️ **Rohdaten-Ansicht (`DatenbankAnsichtForm`):** Ein ungeschönter, direkter Blick auf die MySQL-Tabellen, um zu beweisen, dass die Datenstruktur ordnungsgemäß gefüllt wird.
 
 ### Datenbankschema im Detail
 

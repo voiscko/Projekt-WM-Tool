@@ -1,14 +1,14 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using WMTippTool.Database;
+using WMTippTool.Datenbank;
 
 /*
  * Projekt: WM-Tipp-Tool 2026
  * Entwickler: voiscko (Telegram: @voiscko)
  */
 
-namespace WMTippTool.Forms
+namespace WMTippTool.Formulare
 {
     /// <summary>
     /// Das ist das Hauptfenster (MainForm) unseres Programms.

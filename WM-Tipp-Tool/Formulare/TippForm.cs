@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using WMTippTool.Database;
+using WMTippTool.Datenbank;
 
-namespace WMTippTool.Forms
+namespace WMTippTool.Formulare
 {
     /// <summary>
     /// In diesem Fenster (Form) können Nutzer ihre Tipps für ein Spiel abgeben.

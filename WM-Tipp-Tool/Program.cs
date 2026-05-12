@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
-using WMTippTool.Database;
-using WMTippTool.Forms;
+using WMTippTool.Datenbank;
+using WMTippTool.Formulare;
 
 /*
  * Projekt: WM-Tipp-Tool 2026

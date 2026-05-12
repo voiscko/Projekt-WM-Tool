@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using WMTippTool.Database;
+using WMTippTool.Datenbank;
 
-namespace WMTippTool.Forms
+namespace WMTippTool.Formulare
 {
     /// <summary>
     /// Dieses Fenster ist das SQL-Terminal. Es zeigt alle Datenbankbefehle in Echtzeit an.
@@ -26,7 +26,7 @@ namespace WMTippTool.Forms
                 ProtokollHinzufuegen(log);
             }
 
-            // Hier melden wir uns beim Event des QueryLoggers an.
+            // Hier melden wir uns beim Event des SQLProtokollierers an.
             // Das bedeutet: Wenn im SQLProtokollierer 'BeiNeuemProtokollEintrag' ausgelöst wird,
             // soll automatisch unsere Methode 'SQLProtokollierer_BeiNeuemProtokollEintrag' ausgeführt werden.
             SQLProtokollierer.BeiNeuemProtokollEintrag += SQLProtokollierer_BeiNeuemProtokollEintrag;

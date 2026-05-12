@@ -2,9 +2,9 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using WMTippTool.Database;
+using WMTippTool.Datenbank;
 
-namespace WMTippTool.Forms
+namespace WMTippTool.Formulare
 {
     /// <summary>
     /// In diesem Fenster (Form) verwalten wir die Spiele.
