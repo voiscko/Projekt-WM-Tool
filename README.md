@@ -414,9 +414,9 @@ Beim ersten Start erstellt das Programm die Datenbank und alle Tabellen **automa
 
 ## 👥 Team & Aufgabenverteilung
 
-- **Aylin**: Developer — [TippForm.cs Logik](WM-Tipp-Tool/Formulare/TippForm.cs) (Erfolgreich verschlankt von 515 auf 160 Zeilen!)
-- **Lian**: Developer — [SpielForm.cs Logik](WM-Tipp-Tool/Formulare/SpielForm.cs) (Erfolgreich verschlankt von 450 auf 131 Zeilen!)
-- **Mark**: UI-Design Refactoring (`TippFormDesign.cs` ~180 Zeilen, `SpielFormDesign.cs` ~160 Zeilen, `DesignHelper.cs`) + Alles andere & Zusammensetzen (z.B. [Program.cs](WM-Tipp-Tool/Program.cs), [Datenbank/](WM-Tipp-Tool/Datenbank/))
+- **Aylin**: Developer — [TippForm.cs Logik](WM-Tipp-Tool/Formulare/TippForm.cs)
+- **Lian**: Developer — [SpielForm.cs Logik](WM-Tipp-Tool/Formulare/SpielForm.cs)
+- **Mark**: UI-Design Refactoring - [Program.cs](WM-Tipp-Tool/Program.cs) + [Datenbank/](WM-Tipp-Tool/Datenbank/))
 
 ---
 
