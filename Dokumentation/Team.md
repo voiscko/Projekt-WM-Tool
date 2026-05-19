@@ -1,7 +1,11 @@
 # 👥 Team & Aufgabenverteilung
 
-- **Aylin**: Developer — [TippForm.cs Logik](../WM-Tipp-Tool/Formulare/TippForm.cs)
-- **Lian**: Developer — [SpielForm.cs Logik](../WM-Tipp-Tool/Formulare/SpielForm.cs)
+- **Aylin**: Developer — [TippForm.cs Logik](../WM-Tipp-Tool/Formulare/TippForm.cs) & [TippFormDesign.cs](../WM-Tipp-Tool/Formulare/TippFormDesign.cs)
+  - **Klassentrennung & Refactoring**: Entkopplung von Geschäftslogik (`TippForm.cs`) und UI-Design (`TippFormDesign.cs`) durch Aufteilung in `partial`-Klassen.
+  - **Features**: C#-Logik für die Tippabgabe, Duplikatschutz sowie die dynamische Hintergrund-Spiel-ID-Zuordnung via Dropdown.
+- **Lian**: Developer — [SpielForm.cs Logik](../WM-Tipp-Tool/Formulare/SpielForm.cs) & [SpielFormDesign.cs](../WM-Tipp-Tool/Formulare/SpielFormDesign.cs)
+  - **Klassentrennung & Refactoring**: Entkopplung von Geschäftslogik (`SpielForm.cs`) und UI-Design (`SpielFormDesign.cs`) durch Aufteilung in `partial`-Klassen.
+  - **Features**: C#-Logik für die Spielverwaltung (Anlegen neuer WM-Spiele, Validierung der Daten und Löschen ausgewählter Spiele).
 - **Mark**: Lead Architect & System-Developer
   - **System-Architektur & Core-Datenbank ([DatenbankVerbindung.cs](../WM-Tipp-Tool/Datenbank/DatenbankVerbindung.cs))**:
     - Konfigurations-Parser für `db.config` (mit Lazy-Loading & automatischer Datei-Generierung bei Erststart).
@@ -10,9 +14,8 @@
   - **Event-basiertes Terminal-Logging ([SQLProtokollierer.cs](../WM-Tipp-Tool/Datenbank/SQLProtokollierer.cs) & [ProtokollForm.cs](../WM-Tipp-Tool/Formulare/ProtokollForm.cs))**:
     - Programmweites Event-Logging für SQL-Befehle via Publisher-Subscriber-Pattern (`event Action<string>`).
     - Thread-Safe UI-Updates (`InvokeRequired`) im Hacker-Style-Protokoll-Fenster.
-  - **Modernes UI-Design Refactoring & Designsystem**:
-    - **Klassentrennung (Refactoring):** Entkopplung von Geschäftslogik und UI-Design durch die Aufteilung in `partial`-Klassen ([TippFormDesign.cs](../WM-Tipp-Tool/Formulare/TippFormDesign.cs), [SpielFormDesign.cs](../WM-Tipp-Tool/Formulare/SpielFormDesign.cs)).
-    - **Zentrales Designsystem ([DesignHelper.cs](../WM-Tipp-Tool/Formulare/DesignHelper.cs)):** Standardisierte UI-Steuerelemente, Dark Mode, Farbschemata und dynamische Hover-Animationen.
+  - **Zentrales Designsystem ([DesignHelper.cs](../WM-Tipp-Tool/Formulare/DesignHelper.cs))**:
+    - Erstellung der zentralen Style-Hilfsklasse für standardisierte UI-Steuerelemente, Dark Mode, einheitliche Farbschemata und dynamische Hover-Animationen im gesamten Programm.
   - **Hauptmenü & Navigationssteuerung ([MainForm.cs](../WM-Tipp-Tool/Formulare/MainForm.cs))**:
     - Visueller Einstiegspunkt, Echtzeit-Datenbankstatusprüfung (visueller Verbunden/Getrennt-Indikator).
   - **Präsentationswerkzeuge ([DatenbankAnsichtForm.cs](../WM-Tipp-Tool/Formulare/DatenbankAnsichtForm.cs))**:
