@@ -9,7 +9,7 @@ Jedes Formular hat immer diese zwei Methoden:
 
 ### 📐 Warum gibt es extra "Design"-Dateien? (Refactoring)
 
-Damit der Code für alle im Team einfacher zu verstehen ist, haben wir die **Logik** (Was passiert, wenn man klickt?) vom **Design** (Wo ist der Button, welche Farbe hat er?) getrennt. 
+Damit der Code für alle im Team einfacher zu verstehen ist, haben wir die **Logik** (Was passiert, wenn man klickt?) vom **Design** (Wo ist der Button, welche Farbe hat er?) getrennt.
 
 Das nennt man **"Refactoring"** (Code aufräumen).
 Vorher waren hunderte Zeilen Design-Code mit dem Logik-Code vermischt. Jetzt haben wir für einige Formulare `partial` Klassen erstellt. `partial` bedeutet, dass eine C#-Klasse auf mehrere Dateien aufgeteilt werden kann:
@@ -48,6 +48,7 @@ fenster.ShowDialog();
 Das ist das **allererste Fenster**, das der Nutzer sieht. Es hat 5 Buttons, die jeweils ein anderes Fenster öffnen. Außerdem zeigt es unten an, ob MySQL gerade verbunden ist (grüner oder roter Punkt).
 
 **Ablauf:**
+
 1. `KomponentenInitialisieren()` baut alle 5 Buttons und das Layout auf
 2. `DatenbankStatusPruefen()` ruft `DatenbankVerbindung.VerbindungTesten()` auf und zeigt das Ergebnis an
 
@@ -58,6 +59,7 @@ Das ist das **allererste Fenster**, das der Nutzer sieht. Es hat 5 Buttons, die 
 Hier kann der Admin (Lehrer/Organisator) neue Spiele anlegen und bestehende löschen.
 
 **So funktioniert das Hinzufügen:**
+
 ```
 Nutzer gibt Team1, Team2, Datum ein
   → Klick auf "Spiel hinzufügen"
@@ -68,6 +70,7 @@ Nutzer gibt Team1, Team2, Datum ein
 ```
 
 **So funktioniert das Löschen:**
+
 ```
 Nutzer klickt eine Zeile in der Tabelle an
   → Klick auf "Ausgewähltes Spiel löschen"
@@ -90,9 +93,11 @@ Das Dropdown zeigt dem Nutzer lesbaren Text (`"Deutschland vs. Spanien (14.06.20
 
 **Duplikatschutz:**
 Bevor ein Tipp gespeichert wird, fragt das Programm die Datenbank:
+
 ```sql
 SELECT COUNT(*) FROM tipps WHERE spiel_id = 5 AND benutzername = 'Max'
 ```
+
 Wenn die Zahl größer als 0 ist, hat der Nutzer schon getippt → Fehlermeldung.
 
 ---
@@ -100,6 +105,7 @@ Wenn die Zahl größer als 0 ist, hat der Nutzer schon getippt → Fehlermeldung
 ### 4. `RanglisteForm.cs` — Ergebnisse & Rangliste
 
 Dies ist das **komplexeste Fenster**. Es hat zwei Aufgaben:
+
 1. Echte Ergebnisse eintragen und Punkte berechnen
 2. Die Gesamtrangliste anzeigen
 
@@ -120,6 +126,7 @@ private static int BerechnePunkte(int tipp1, int tipp2, int ergebnis1, int ergeb
 ```
 
 **Der Ablauf beim Eintragen eines Ergebnisses:**
+
 ```
 Admin wählt Spiel im Dropdown, gibt Ergebnis ein
   → Klick auf "Ergebnis speichern & Punkte berechnen"
@@ -131,6 +138,7 @@ Admin wählt Spiel im Dropdown, gibt Ergebnis ein
 ```
 
 **Die Rangliste-Abfrage (komplexes SQL):**
+
 ```sql
 SELECT
   ROW_NUMBER() OVER (ORDER BY SUM(punkte) DESC) AS 'Platz',
@@ -141,6 +149,7 @@ FROM tipps
 GROUP BY benutzername
 ORDER BY Gesamtpunkte DESC
 ```
+
 - `GROUP BY benutzername` → fasst alle Tipps eines Nutzers zusammen
 - `SUM(punkte)` → addiert alle seine Punkte
 - `ROW_NUMBER()` → vergibt automatisch die Platzierung (1, 2, 3, ...)
@@ -164,6 +173,7 @@ Ein Terminal-Fenster im Hacker-Style (schwarzer Hintergrund, grüne Schrift). Es
 **Wie funktioniert die Echtzeit-Aktualisierung?**
 
 Das `ProtokollForm` meldet sich beim **Event** des `SQLProtokollierer`s an:
+
 ```csharp
 // Im Konstruktor:
 SQLProtokollierer.BeiNeuemProtokollEintrag += SQLProtokollierer_BeiNeuemProtokollEintrag;
@@ -172,6 +182,7 @@ SQLProtokollierer.BeiNeuemProtokollEintrag += SQLProtokollierer_BeiNeuemProtokol
 Wenn jetzt irgendwo im Programm `SQLProtokollierer.Protokollieren(...)` aufgerufen wird, feuert das Event und die Methode `SQLProtokollierer_BeiNeuemProtokollEintrag` wird automatisch aufgerufen → neuer Text erscheint sofort im Terminal.
 
 Wenn das Fenster **geschlossen** wird, muss es sich wieder abmelden (sonst Absturz):
+
 ```csharp
 // OnFormClosing:
 SQLProtokollierer.BeiNeuemProtokollEintrag -= SQLProtokollierer_BeiNeuemProtokollEintrag;

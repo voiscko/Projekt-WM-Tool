@@ -7,6 +7,7 @@ Dies ist unsere wichtigste Hilfsklasse. Sie ist `static` — das bedeutet, sie e
 ### Wie liest sie die `db.config`?
 
 Die `db.config`-Datei ist eine einfache Textdatei:
+
 ```ini
 Host=localhost
 Port=3306
@@ -58,6 +59,7 @@ Die Klasse speichert alle Einträge in einer Liste. Wenn das `ProtokollForm` (da
 Das Programm nutzt zwei Tabellen in MySQL, die beim ersten Start **automatisch erstellt** werden:
 
 ### Tabelle `spiele`
+
 Speichert alle WM-Spiele.
 
 | Spalte | Typ | Beschreibung |
@@ -70,6 +72,7 @@ Speichert alle WM-Spiele.
 | `ergebnis_team2` | INT, NULL | Echtes Ergebnis (leer = Spiel noch offen) |
 
 ### Tabelle `tipps`
+
 Speichert alle Tipps der Nutzer.
 
 | Spalte | Typ | Beschreibung |

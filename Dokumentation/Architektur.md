@@ -59,6 +59,7 @@ Application.Run(new MainForm());
 ```
 
 **Der Ablauf beim Start:**
+
 1. Windows-Einstellungen setzen (Schärfe auf jedem Monitor)
 2. Die Klasse `DatenbankVerbindung` aufrufen → sie liest die `db.config`, verbindet sich mit MySQL und erstellt die Tabellen, falls sie noch nicht existieren
 3. Das Hauptmenü (`MainForm`) öffnen

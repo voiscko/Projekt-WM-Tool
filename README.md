@@ -1,7 +1,7 @@
 <div align="center">
   <img src="WM-Tipp-Tool/Cover.png" alt="WM-Tipp-Tool 2026 Cover" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;" />
 
-  # 🏆 WM-Tipp-Tool 2026
+# 🏆 WM-Tipp-Tool 2026
 
   **Das ultimative Desktop-Tool für dein WM-Tippspiel im Heimnetz!** ⚽
 
@@ -41,20 +41,25 @@ Hier findest du alle Details zum Projekt, aufgeteilt in übersichtliche Bereiche
 ## 🚀 Installation & Start
 
 ### Voraussetzungen
+
 1. **[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)** installiert
 2. **MySQL / XAMPP** läuft lokal auf Port 3306
 3. Visual Studio (empfohlen) oder VS Code mit C# Dev Kit
 
 ### Schritt 1 — Repository klonen & Pakete laden
+
 ```powershell
 dotnet restore
 ```
 
 ### Schritt 2 — Datenbank konfigurieren
+
 ```powershell
 copy db.config.example db.config
 ```
+
 Die `db.config` öffnen und das MySQL-Passwort eintragen:
+
 ```ini
 Host=localhost
 Port=3306
@@ -64,9 +69,11 @@ Password=DEIN_PASSWORT
 ```
 
 ### Schritt 3 — Programm starten
+
 ```powershell
 dotnet run
 ```
+
 Beim ersten Start erstellt das Programm die Datenbank und alle Tabellen **automatisch**!
 
 ---
