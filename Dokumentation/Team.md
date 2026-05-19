@@ -2,4 +2,25 @@
 
 - **Aylin**: Developer — [TippForm.cs Logik](../WM-Tipp-Tool/Formulare/TippForm.cs)
 - **Lian**: Developer — [SpielForm.cs Logik](../WM-Tipp-Tool/Formulare/SpielForm.cs)
-- **Mark**: UI-Design Refactoring - [Program.cs](../WM-Tipp-Tool/Program.cs) + [Datenbank/](../WM-Tipp-Tool/Datenbank/)
+- **Mark**: Lead Architect & System-Developer
+  - **System-Architektur & Core-Datenbank ([DatenbankVerbindung.cs](../WM-Tipp-Tool/Datenbank/DatenbankVerbindung.cs))**:
+    - Konfigurations-Parser für `db.config` (mit Lazy-Loading & automatischer Datei-Generierung bei Erststart).
+    - Automatisches SQL-Tabellen-Setup (`spiele` & `tipps` via DDL-Befehlen) beim Programmstart.
+    - Genereller Verbindungsaufbau zu MySQL und Exception-Handling.
+  - **Event-basiertes Terminal-Logging ([SQLProtokollierer.cs](../WM-Tipp-Tool/Datenbank/SQLProtokollierer.cs) & [ProtokollForm.cs](../WM-Tipp-Tool/Formulare/ProtokollForm.cs))**:
+    - Programmweites Event-Logging für SQL-Befehle via Publisher-Subscriber-Pattern (`event Action<string>`).
+    - Thread-Safe UI-Updates (`InvokeRequired`) im Hacker-Style-Protokoll-Fenster.
+  - **Modernes UI-Design Refactoring & Designsystem**:
+    - **Klassentrennung (Refactoring):** Entkopplung von Geschäftslogik und UI-Design durch die Aufteilung in `partial`-Klassen ([TippFormDesign.cs](../WM-Tipp-Tool/Formulare/TippFormDesign.cs), [SpielFormDesign.cs](../WM-Tipp-Tool/Formulare/SpielFormDesign.cs)).
+    - **Zentrales Designsystem ([DesignHelper.cs](../WM-Tipp-Tool/Formulare/DesignHelper.cs)):** Standardisierte UI-Steuerelemente, Dark Mode, Farbschemata und dynamische Hover-Animationen.
+  - **Hauptmenü & Navigationssteuerung ([MainForm.cs](../WM-Tipp-Tool/Formulare/MainForm.cs))**:
+    - Visueller Einstiegspunkt, Echtzeit-Datenbankstatusprüfung (visueller Verbunden/Getrennt-Indikator).
+  - **Präsentationswerkzeuge ([DatenbankAnsichtForm.cs](../WM-Tipp-Tool/Formulare/DatenbankAnsichtForm.cs))**:
+    - Interaktiver Rohdaten-Viewer zum direkten Einblick in MySQL-Tabellen während Schulvorträgen.
+  - **Echtes Scoreboard & Kern-Tippspiellogik ([RanglisteForm.cs](../WM-Tipp-Tool/Formulare/RanglisteForm.cs))**:
+    - Mathematischer Punkteberechnungs-Algorithmus (3, 1 oder 0 Punkte).
+    - Automatisches Bulk-Update aller Schüler-Tipps bei Ergebniseintragung.
+    - Komplexe SQL-Aggregationen (`ROW_NUMBER() OVER`) für die Gesamttabelle.
+    - Dynamisches Einfärben (Gold, Silber, Bronze) der Podiumsplätze via Row-Draw-Events.
+  - **DPI-Awareness & Startpunkt ([Program.cs](../WM-Tipp-Tool/Program.cs))**:
+    - Scharfe Darstellung auf allen Windows-VMs und hochauflösenden 4K-Monitoren (`HighDpiMode.PerMonitorV2`).
